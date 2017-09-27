@@ -7,8 +7,16 @@ ith row of the file indicates the ith entry of an array.
 Because of the large size of this array, you should implement the fast 
 divide-and-conquer algorithm covered in the video lectures."""
 
+def splitArray(integer_array):
+    
+    mid = integer_array // 2
+    array_a = mergeSort(integer_array[:mid])
+    array_b = mergeSort(integer_array[mid:])   
+    
+    return array_a, array_b
 
-def mergeSort(integer_array):
+
+def mergeSort(sub_array):
     """ Takes in a list of integers and returns sorted list
     
     Args:
@@ -18,10 +26,10 @@ def mergeSort(integer_array):
         list
     """
     
-    if len(integer_array) > 1:
-        mid = len(integer_array) // 2
-        lefthalf = integer_array[:mid]
-        righthalf = integer_array[mid:]
+    if len(sub_array) > 1:
+        mid = len(sub_array) // 2
+        lefthalf = sub_array[:mid]
+        righthalf = sub_array[mid:]
         
         mergeSort(lefthalf)
         mergeSort(righthalf)
@@ -31,48 +39,48 @@ def mergeSort(integer_array):
         
         while i < len(lefthalf) and j < len(righthalf):
             if lefthalf[i] < righthalf[j]:
-                integer_array[k] = lefthalf[i]
+                sub_array[k] = lefthalf[i]
                 i += 1
             else:
-                integer_array[k]=righthalf[j]
+                sub_array[k]=righthalf[j]
                 j += 1
             k += 1
 
         while i < len(lefthalf):
-            integer_array[k] = lefthalf[i]
+            sub_array[k] = lefthalf[i]
             i += 1
             k += 1
 
         while j < len(righthalf):
-            integer_array[k] = righthalf[j]
+            sub_array[k] = righthalf[j]
             j += 1
             k += 1
 
-    mid = integer_array // 2
-    array_a = mergeSort(integer_array[:mid])
-    array_b = mergeSort(integer_array[mid:])   
-    
-    return array_a, array_b
+    return sub_array
 
 
 def counting_inversions(integer_array):
     
-    array_a, array_b = mergeSort(integer_array)
+    array_a, array_b = splitArray(integer_array)
+    
+    sorted_a = mergeSort(array_a)
+    sorted_b = mergeSort(array_b)
+    
     sorted_list = []
     i = 0
     j = 0
     inv = 0   
     
-    if not len(array_a):
-        sorted_list.append(array_b[j])
+    if not len(sorted_a):
+        sorted_list.append(sorted_b[j])
         j += 1
     
-    for i in len(range(array_a)):
-        if array_a[i] < array_b[j]:
-            sorted_list.append(array_a[i])
+    for i in len(range(sorted_a)):
+        if sorted_a[i] < sorted_b[j]:
+            sorted_list.append(sorted_a[i])
             i += 1
         else:
-            sorted_list.append(array_b[j])
+            sorted_list.append(sorted_b[j])
             j += 1
             inv += 1
 
