@@ -114,13 +114,15 @@ integer_array = create_integer_array('IntegerArray.txt')
 sorted_list, inv, inv_list, sorted_a, sorted_b = counting_inversions(integer_array)
 print('result', inv)
     
-file = open('results.txt', 'w')
-file.write(str(inv_list))
-file.close()
-
-file = open('sub_array.txt', 'w')
-file.write(str(sorted_a))
-file.close()
+# =============================================================================
+# file = open('results.txt', 'w')
+# file.write(str(inv_list))
+# file.close()
+# 
+# file = open('sub_array.txt', 'w')
+# file.write(str(sorted_a))
+# file.close()
+# =============================================================================
 
 #4,999,950,000
 
