@@ -7,12 +7,17 @@ ith row of the file indicates the ith entry of an array.
 Because of the large size of this array, you should implement the fast 
 divide-and-conquer algorithm covered in the video lectures."""
 
+def create_integer_array(filename):
+    with open(filename) as f:
+        integer_array = f.read().splitlines()
+
+    return integer_array
 
 def mergeSort(integer_array):
     """ Takes in a list of integers and returns sorted list
     
     Args:
-        alist - list of integers
+        integer_array - list of integers
         
     Returns:
         list
@@ -48,9 +53,9 @@ def mergeSort(integer_array):
             j += 1
             k += 1
 
-    mid = integer_array // 2
-    array_a = mergeSort(integer_array[:mid])
-    array_b = mergeSort(integer_array[mid:])   
+    mid = len(integer_array) // 2
+    array_a = integer_array[:mid]
+    array_b = integer_array[mid:] 
     
     return array_a, array_b
 
@@ -67,7 +72,7 @@ def counting_inversions(integer_array):
         sorted_list.append(array_b[j])
         j += 1
     
-    for i in len(range(array_a)):
+    for i in range(len(array_a)):
         if array_a[i] < array_b[j]:
             sorted_list.append(array_a[i])
             i += 1
@@ -79,9 +84,13 @@ def counting_inversions(integer_array):
     return sorted_list, inv 
 
 
-    
-#integer_array = 
-#counting_inversions(integer_array)
+
+
+
+
+integer_array = create_integer_array('IntegerArray.txt')
+sorted_list, inv = counting_inversions(integer_array)
+print(inv)
     
     
     
