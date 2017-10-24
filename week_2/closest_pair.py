@@ -9,39 +9,39 @@ def find_dist(coord1, coord2):
     return math.sqrt((coord1[0] - coord2[0]) ** 2 + (coord1[1] - coord2[1]) ** 2)
 
 
-def brute(sorted_x):
-    coord1 = sorted_x[0]
-    coord2 = sorted_x[1]
-    min_dist = find_dist(coord1, coord2)
-    len_sorted_x = len(sorted_x)
+def brute(sort_by_x):
+    coord_x = sort_by_x[0]
+    coord_y = sort_by_x[1]
+    min_dist = find_dist(coord_x, coord_y)
+    len_sorted_x = len(sort_by_x)
     
     if len_sorted_x == 2:
-        return coord1, coord2, min_dist
+        return coord_x, coord_y, min_dist
     for i in range(len_sorted_x - 1):
         for j in range(i + 1, len_sorted_x):
             if i != 0 and j != 1:
-                current_dist = find_dist(sorted_x[i], sorted_x[j])
+                current_dist = find_dist(sort_by_x[i], sort_by_x[j])
                 if current_dist < min_dist:  # Update min_dist and points
                     min_dist = current_dist
-                    coord1, coord2 = sorted_x[i], sorted_x[j]
+                    coord_x, coord_y = sort_by_x[i], sort_by_x[j]
                     
-    return coord1, coord2, min_dist
+    return coord_x, coord_y, min_dist
 
 
 
-def closest_split_pair(sorted_x, sorted_y, delta, best_pair):
-    len_sorted_x = len(sorted_x)  
-    sorted_x_mid = sorted_x[len_sorted_x // 2][0]  # select midpoint on x-sorted array
+def closest_split_pair(sort_by_x, sort_by_y, delta, best_pair):
+    len_sort_by_x = len(sort_by_x)  
+    sort_by_x_mid = sort_by_x[len_sort_by_x // 2][0]  # select midpoint on x-sorted array
 
     # Create a subarray of points not further than delta from
-    # midpoint on x-sorted array
+    # midpoint on array sorted by x
 
-    sub_array = [x for x in sorted_y if sorted_x_mid - delta <= x[0] <= sorted_x_mid + delta]
+    sub_array = [x for x in sort_by_y if sort_by_x_mid - delta <= x[0] <= sort_by_x + delta]
     min_dist = delta  
-    len_sorted_y = len(sub_array)  
+    len_sub_array = len(sub_array)  
     
-    for i in range(len_sorted_y - 1):
-        for j in range(i + 1, min(i + 7, len_sorted_y)):
+    for i in range(len_sub_array - 1):
+        for j in range(i + 1, min(i + 7, len_sub_array)):
             p, q = sub_array[i], sub_array[j]
             current_dist = find_dist(p, q)
             if current_dist < min_dist:
