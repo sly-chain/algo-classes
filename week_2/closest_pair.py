@@ -9,34 +9,34 @@ def find_dist(coord1, coord2):
     return math.sqrt((coord1[0] - coord2[0]) ** 2 + (coord1[1] - coord2[1]) ** 2)
 
 
-def brute(sort_by_x):
-    coord_x = sort_by_x[0]
-    coord_y = sort_by_x[1]
+def brute(x_sort):
+    coord_x = x_sort[0]
+    coord_y = x_sort[1]
     min_dist = find_dist(coord_x, coord_y)
-    len_sorted_x = len(sort_by_x)
+    len_sorted_x = len(x_sort)
     
     if len_sorted_x == 2:
         return coord_x, coord_y, min_dist
     for i in range(len_sorted_x - 1):
         for j in range(i + 1, len_sorted_x):
             if i != 0 and j != 1:
-                current_dist = find_dist(sort_by_x[i], sort_by_x[j])
+                current_dist = find_dist(x_sort[i], x_sort[j])
                 if current_dist < min_dist:  # Update min_dist and points
                     min_dist = current_dist
-                    coord_x, coord_y = sort_by_x[i], sort_by_x[j]
+                    coord_x, coord_y = x_sort[i], x_sort[j]
                     
     return coord_x, coord_y, min_dist
 
 
 
-def closest_split_pair(sort_by_x, sort_by_y, delta, best_pair):
-    len_sort_by_x = len(sort_by_x)  
-    sort_by_x_mid = sort_by_x[len_sort_by_x // 2][0]  # select midpoint on x-sorted array
+def closest_split_pair(x_sort, y_sort, delta, best_pair):
+    len_x_sort = len(x_sort)  
+    mid_x_sort = x_sort[len_x_sort // 2][0]  # select midpoint on x-sorted array
 
     # Create a subarray of points not further than delta from
     # midpoint on array sorted by x
 
-    sub_array = [x for x in sort_by_y if sort_by_x_mid - delta <= x[0] <= sort_by_x + delta]
+    sub_array = [x for x in y_sort if mid_x_sort - delta <= x[0] <= x_sort + delta]
     min_dist = delta  
     len_sub_array = len(sub_array)  
     
@@ -51,25 +51,25 @@ def closest_split_pair(sort_by_x, sort_by_y, delta, best_pair):
 
 
 
-def closest_pair(sorted_x, sorted_y):
-    len_sorted_x = len(sorted_x)  
-    if len_sorted_x <= 3:
-        return brute(sorted_x) 
-    mid = len_sorted_x // 2 
-    Qx = sorted_x[:mid]  
-    Rx = sorted_x[mid:]
+def closest_pair(x_sort, y_sort):
+    len_x_sort = len(x_sort)  
+    if len_x_sort <= 3:
+        return brute(x_sort) 
+    mid = len_x_sort // 2 
+    Qx = x_sort[:mid]  
+    Rx = x_sort[mid:]
 
     # Determine midpoint on x-axis
 
-    midpoint = sorted_x[mid][0]  
+    midpoint = x_sort[mid][0]  
     Qy = []
     Ry = []
     
-    for x in sorted_y:  # split sorted_y into 2 arrays using midpoint
-        if x[0] <= midpoint:
-           Qy.append(x)
+    for i in y_sort:  # split sorted_y into 2 arrays using midpoint
+        if i[0] <= midpoint:
+           Qy.append(i)
         else:
-           Ry.append(x)
+           Ry.append(i)
 
     # Call recursively both arrays after split
 
@@ -87,7 +87,7 @@ def closest_pair(sorted_x, sorted_y):
 
     # Call function to account for points on the boundary
 
-    (p3, q3, mi3) = closest_split_pair(sorted_x, sorted_y, d, mn)
+    (p3, q3, mi3) = closest_split_pair(x_sort, y_sort, d, mn)
 
     # Determine smallest distance for the array
 
@@ -98,9 +98,8 @@ def closest_pair(sorted_x, sorted_y):
 
 
 
-def solution(x, y):
-    a = list(zip(x, y))
-    sorted_x = sorted(a, key=lambda x: x[0])  
-    sorted_y = sorted(a, key=lambda x: x[1])  
-    p1, p2, mi = closest_pair(sorted_x, sorted_y)  
+def solution(P):
+    sorted_by_x = sorted(P, key=lambda x: x[0])  
+    sorted_by_y = sorted(P, key=lambda x: x[1])  
+    p1, p2, mi = closest_pair(sorted_by_x, sorted_by_y)  
     return mi
