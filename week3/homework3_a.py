@@ -1,9 +1,16 @@
 """
-The file contains all of the integers between 1 and 10,000 (inclusive, with no repeats) in unsorted order. 
+The file contains all of the integers between 1 and 10,000 (inclusive, with no 
+repeats) in unsorted order. 
 
-Your task is to compute the total number of comparisons used to sort the given input file by QuickSort. As you know, the number of comparisons depends on which elements are chosen as pivots, so we'll ask you to explore three different pivoting rules.
+Your task is to compute the total number of comparisons used to sort the given 
+input file by QuickSort. As you know, the number of comparisons depends on 
+which elements are chosen as pivots, so we'll ask you to explore three 
+different pivoting rules.
 
-You should not count comparisons one-by-one. Rather, when there is a recursive call on a subarray of length m, you should simply add m−1 to your running total of comparisons. (This is because the pivot element is compared to each of the other m−1 elements in the subarray in this recursive call.)
+You should not count comparisons one-by-one. Rather, when there is a recursive 
+call on a subarray of length m, you should simply add m−1 to your running total 
+of comparisons. (This is because the pivot element is compared to each of the 
+other m−1 elements in the subarray in this recursive call.)
 """
 
 # first element of the array as the pivot element
@@ -25,18 +32,29 @@ def partition(input_array, left_bound, right_bound):
     return i-1, input_array
 
 
-def quick_sort(pivot, partitioned_array):
+def sort_partition(unsorted_array):
     
+    sorted_array = []
     
-    Q = partitioned_array[:pivot]
-    R = partitioned_array[pivot+1:]
+    for i in unsorted_array:
+        
+    
+    return sorted_array
+    
 
+def quick_sort(input_array, left_bound, right_bound):
+    
+    pivot, partitioned_array = partition(input_array, left_bound, right_bound)
+    
+    Q = sort_partition(partitioned_array[:pivot])
+    R = sort_partition(partitioned_array[pivot+1:])
 
+    return Q + pivot + R
             
         
 
 #input_array = [3, 8, 2, 5, 1, 4, 7, 6]
-#pivot, partitioned_array = partition(input_array, 0, len(input_array)-1)
+#quick_sort(input_array, 0, len(input_array)-1)
     
 #print(partition(input_array, 0, len(input_array)-1))
     
