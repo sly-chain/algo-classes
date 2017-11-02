@@ -1,7 +1,12 @@
 """
-The file contains all of the integers between 1 and 10,000 (inclusive, with no repeats) in unsorted order. 
+The file contains all of the integers between 1 and 10,000 (inclusive, with no 
+repeats) in unsorted order. 
 
-Your task is to compute the total number of comparisons used to sort the given input file by QuickSort. You should not count comparisons one-by-one. Rather, when there is a recursive call on a subarray of length m, you should simply add m−1 to your running total of comparisons. (This is because the pivot element is compared to each of the other m−1 elements in the subarray in this recursive call.)
+Your task is to compute the total number of comparisons used to sort the given 
+input file by QuickSort. You should not count comparisons one-by-one. Rather, when there is a recursive 
+call on a subarray of length m, you should simply add m−1 to your running total 
+of comparisons. (This is because the pivot element is compared to each of the 
+other m−1 elements in the subarray in this recursive call.)
 """
 
 # first element of the array as the pivot element
@@ -71,7 +76,6 @@ input_array = [3, 8, 2, 5, 1, 4, 7, 6]
 left_bound = 0 
 right_bound = len(input_array) - 1
 print(quick_sort(input_array))
-
     
     
 
