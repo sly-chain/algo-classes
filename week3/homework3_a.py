@@ -28,48 +28,43 @@ def partition(input_array, left_bound, right_bound):
 
 
 
-def sort(partitioned_array, sorted_array=[], comparisons = 0):
+def sort(partitioned_array, sorted_array=[]):
+    global count
     len_array= len(partitioned_array)
     
     if len_array == 1:
-        print('1', comparisons)
         return sorted_array.append(partitioned_array[0])
     
     else:
         k = 0
-        comparisons += len_array-1
-        
         for j in range(len_array-1):
             if partitioned_array[k] > partitioned_array[j+1]:
                 partitioned_array[j+1], partitioned_array[k] = partitioned_array[k], partitioned_array[j+1]
                 k += 1
-            
         sorted_array.append(partitioned_array[0])
         sort(partitioned_array[1:])
+        count += len_array-1
         
-    print('2', comparisons)
-    return comparisons, sorted_array
+    return count, sorted_array
 
 
 
 def quick_sort(input_array):
-    
     if len(input_array) == 0 or len(input_array) == 1:
         return 0, input_array
     
-    pivot, partitioned_array = partition(input_array, left_bound, right_bound)
+    pivot_index, partitioned_array = partition(input_array, left_bound, right_bound)
 
-#    Q_comparisons, Q = sort(partitioned_array[:pivot])
-    R_comparisons, R = sort(partitioned_array[pivot+1:])
+#    Q_count, Q = sort(partitioned_array[:pivot_index])
+    R_count, R = sort(partitioned_array[pivot_index+1:])
     
-#    return Q + [input_array[pivot]] + R
-#    return Q_comparisons + R_comparisons, R
-#    return Q_comparisons, Q
-    return R_comparisons, R
+#    return Q + [input_array[pivot_index]] + R
+#    return Q_count + R_comparisons, R
+#    return Q_count, Q
+    return R_count, R
 
             
-        
-comparisons = 0
+count = 0
 input_array = [3, 8, 2, 5, 1, 4, 7, 6]
 left_bound = 0 
 right_bound = len(input_array) - 1
