@@ -18,5 +18,61 @@ the space provided. So e.g., if your answer is 5, just type 5 in the space
 provided.
 """
 
+import random
 
+class Graph(object):
+    def __init__(self, file):
+        self._file = file
+
+
+    def _create_graph(self):
+        graph = {}
+        
+        with open(self._file) as adjacency_list:
+            for line in adjacency_list:
+                single_line = [int(s) for s in line.split()]
+                graph[single_line[0]] = single_line[1:]
+                
+        return graph
+
+graph = Graph._create_graph('week_4/kargerMinCut.txt')
+
+# choose random edge 
+def get_random_edge():
+    """
+    pick random key
+    then pick random value from that key
+    """
+    v1 = random.choice(list(graph))
+    v2 = random.choice(v1)
+    
+    return v1, v2
+        
+# contract chosen edge
+def contract():
+    v1, v2 = get_random_edge()
+
+  # add vertices from graph[v2] to graph[v1]
+  # delete graph[v2]
+    graph[v1].extend[graph(v2)]
+    del graph[v2]
+    
+  # delete any references to v2  
+    for k, v in graph.iteritems():
+        graph[k].remove(v2)
+  
+  # remove self loops
+    for v in graph[v1]:
+        if v == v1:
+            graph[v1].remove(v1)
+    
+
+def min_cut():
+    while len(graph) <2:
+        contract()
+    # count the edges
+    
+
+# repeat algorithm N times
+        
 
