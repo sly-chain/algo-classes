@@ -114,8 +114,8 @@ def scc(graph, reverse_graph):
 
 
 
-#graph = create_graph('SCC2.txt')
+graph = create_graph('SCC.txt')
 #graph = {1:[4], 2:[8], 3:[6], 4:[7], 5:[2], 6:[9], 7:[1], 8:[5,6], 9:[3,7]}
-graph = {1:[2], 2:[3], 3:[1,5], 4:[5], 5:[6], 6:[4], 7:[6]}
+#graph = {1:[2], 2:[3], 3:[1,5], 4:[5], 5:[6], 6:[4], 7:[6]}
 reverse_graph = transpose_graph(graph)
 print(scc(graph, reverse_graph))
