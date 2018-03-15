@@ -7,3 +7,38 @@ You should report the shortest-path distances to the following ten vertices, in 
 
 IMPLEMENTATION NOTES: This graph is small enough that the straightforward O(mn) time implementation of Dijkstra's algorithm should work fine. OPTIONAL: For those of you seeking an additional challenge, try implementing the heap-based version. Note this requires a heap that supports deletions, and you'll probably need to maintain some kind of mapping between vertices and their positions in the heap.
 """
+
+#import heapq
+
+# create represenation of graph as dictionary of dictionaries
+def create_graph(file):
+    
+    with open(file) as adjacency_list:
+        for line in adjacency_list:
+            single_line = [s for s in line.split()]
+            vertex = int(single_line[0])
+            results = dict([s.split(',') for s in single_line[1:]])
+            graph[vertex] = {int(k):int(v) for k,v in results.items()}
+         
+    return graph
+
+
+# source vertex distance = 0
+# all other vertices start at 1,000,000
+# return shortest-path distances for 7,37,59,82,99,115,133,165,188,197
+
+    
+    
+
+def dijkstra(graph, source):
+    heap = {key: 1000000 for key,value in graph.items()} 
+    visited = {source: 0}
+    
+    while heap:
+        pass
+
+
+
+graph = create_graph('dijkstraData.txt')
+source = 1
+print(dijkstra(graph, 1))
