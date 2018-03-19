@@ -8,10 +8,10 @@ You should report the shortest-path distances to the following ten vertices, in 
 IMPLEMENTATION NOTES: This graph is small enough that the straightforward O(mn) time implementation of Dijkstra's algorithm should work fine. OPTIONAL: For those of you seeking an additional challenge, try implementing the heap-based version. Note this requires a heap that supports deletions, and you'll probably need to maintain some kind of mapping between vertices and their positions in the heap.
 """
 
-#import heapq
 
 # create represenation of graph as dictionary of dictionaries
 def create_graph(file):
+    graph = {}
     
     with open(file) as adjacency_list:
         for line in adjacency_list:
@@ -27,18 +27,62 @@ def create_graph(file):
 # all other vertices start at 1,000,000
 # return shortest-path distances for 7,37,59,82,99,115,133,165,188,197
 
-    
-    
 
-def dijkstra(graph, source):
-    heap = {key: 1000000 for key,value in graph.items()} 
-    visited = {source: 0}
+def dijkstra(graph, source, sought):
     
-    while heap:
-        pass
+    # keep track of all the vertexes visited - delete from heap?
+    heap_map = {key: 1000000 for key, value in graph.items()}
+    heap_map[source] = 0
+    distance_map = {}
+    solution = []
+    
+    # cycle through graph to find minimum distances to source
+    while heap_map:
+        current = min(heap_map, key=heap_map.get)
+        
+        for vertex, distance in graph[current].items():
+            if vertex not in distance_map:
+                    new_distance = heap_map[current] + distance
+                    if distance < heap_map[vertex]:
+                        heap_map[vertex] = new_distance
+                        
+        distance_map[current] = heap_map[current]
+        heap_map.pop(current)
+    
+    if not distance_map[vertex]:
+        distance_map[vertex] = 1000000
+    
+    for vertex in sought:
+        solution.append(distance_map[vertex])
+#        print('here', distance_map[vertex], sep=' ', end=',', flush=True)
+    
+    return ','.join(str(i) for i in solution)
+        
+# =============================================================================
+#         for key,value in graph.items():
+#             
+#             if key == source:
+#                 visited[source] = 0
+#             if heap[key]:
+#                 min_list = [(value, key) for key,value in graph[key].items()]
+#                 extract_min = heapq.heappop(min_list)
+#                 visited[key] = value
+# =============================================================================
+            
 
 
 
 graph = create_graph('dijkstraData.txt')
-source = 1
-print(dijkstra(graph, 1))
+print(dijkstra(graph, 1, [7,37,59,82,99,115,133,165,188,197]))
+
+
+
+
+
+
+
+
+
+
+
+
