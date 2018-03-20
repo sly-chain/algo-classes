@@ -49,8 +49,8 @@ def dijkstra(graph, source, sought):
         distance_map[current] = heap_map[current]
         heap_map.pop(current)
     
-    if not distance_map[vertex]:
-        distance_map[vertex] = 1000000
+#    if not distance_map[vertex]:
+#        distance_map[vertex] = 1000000
     
     for vertex in sought:
         solution.append(distance_map[vertex])
@@ -58,6 +58,47 @@ def dijkstra(graph, source, sought):
     
     return ','.join(str(i) for i in solution)
         
+
+#graph = create_graph('dijkstraData.txt')
+#print(dijkstra(graph, 1, [7,37,59,82,99,115,133,165,188,197]))
+
+
+
+
+
+
+
+import heapq
+
+def dijkstra_heapq(graph, source, sought):
+    heap_map = {key: 1000000 for key, value in graph.items()}
+#    heap_map[source] = 0
+    heap_que = [(source, 0)]
+    distance_map = {source: 0}
+    solution = []
+    
+    while heap_que:
+        current = heapq.heappop(heap_que)[0]
+
+        for vertex, distance in graph[current].items():
+            if vertex not in distance_map:
+                    if distance < heap_map[vertex]:
+                        new_distance = heap_map[current] + distance
+                        heap_map[vertex] = new_distance
+                        heapq.heappush(heap_que, (vertex, new_distance))
+                        
+#        distance_map[current] = heap_map[current]
+        
+    
+    
+    for vertex in sought:
+        solution.append(distance_map[vertex])
+    
+#    print(distance_map)
+    return ','.join(str(i) for i in solution)
+
+
+
 # =============================================================================
 #         for key,value in graph.items():
 #             
@@ -68,16 +109,11 @@ def dijkstra(graph, source, sought):
 #                 extract_min = heapq.heappop(min_list)
 #                 visited[key] = value
 # =============================================================================
-            
 
 
 
 graph = create_graph('dijkstraData.txt')
-print(dijkstra(graph, 1, [7,37,59,82,99,115,133,165,188,197]))
-
-
-
-
+print(dijkstra_heapq(graph, 1, [7,37,59,82,99,115,133,165,188,197]))
 
 
 
