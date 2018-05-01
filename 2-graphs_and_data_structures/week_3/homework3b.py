@@ -10,64 +10,84 @@ class Node:
         self.value = value
         self.left = None
         self.right = None  
-        self.height = 0
-        self.balance_factor = 0
+        self.parent = None
+        self.height = self.get_height()
+        self.balance_factor = self.get_balance_factor()
     
+    def get_height(self):
+        return self.set_height() if self else 0
+
     def set_height(self):
-        if self == None:
-            return 0
-        else:
-            return 1 + max((self.left.height if self.left != None else 0), 
-                       (self.right.height if self.right != None else 0))
-        
-    def height(self):
-        return 0 if self.root == None else self.root.set_height()
+        return 1 + max((self.left.height if self.left else 0), 
+                       (self.right.height if self.right else 0))
         
     def get_balance_factor(self):
-        if self.left:
-            self.balance_factor =+ 1
-        elif self.right == None:
-            self.balance_factor += -1
-        
-#        return self.left.height - self.right.height
-            
+        return self.set_balance_factor() if self else 0
+    
+    def set_balance_factor(self):
+        return (self.left.height if self.left else -1) - \
+               (self.right.height if self.right else -1)
+
 
 class BST:
     def __init__(self):
         self.root = None
 
     def insert(self, key):
-        if not self.root:
-            self.root = Node(key)
-            print('self.balance', self.root.balance_factor)
-        else:
+        if self.root:
             self.insert_key(self.root, key)
+        else:
+            self.root = Node(key)
+            
         
     def insert_key(self, current_node, key):
-        if current_node.value < key:
+        print('insert key for', current_node.value)
+        if key < current_node.value:
             if current_node.left:
                 self.insert_key(current_node.left, key)
             else:
-                print('do you get here')
                 current_node.left = Node(key)
-                current_node.height += 1
+                Node(key).parent = current_node                
+                current_node.balance_factor += 1
+                if not current_node.right:
+                    current_node.height += 1
+                self.balance_tree(current_node)
                 
-        else:
+        if key > current_node.value:
             if current_node.right:
                 self.insert_key(current_node.right, key)
             else:
                 current_node.right = Node(key)
-                current_node.height += 1
-        print('height', current_node.value, ':',  current_node.height) 
+                Node(key).parent = current_node
+                current_node.balance_factor -= 1
+                if not current_node.left:
+                    current_node.height += 1
+                self.balance_tree(current_node)
+        
+    def balance_tree(self, current_node):
+        balance = current_node.balance_factor
+        
+        if balance > 1:
+            if current_node.left.balance_factor > 0:
+                new_root = self.right_rotation()
+            else:
+                new_root = self.left_rotation()
+                new_root = self.right_rotation()
+        
+        if balance < 1:
+            if current_node.right.balance_factor < 0:
+                new_root = self.left_rotation()
+            else:
+                new_root = self.right_rotation()
+                new_root = self.left_rotation()
                 
     def right_rotation(self):
         new_root = self.root.left
         self.root.left = new_root.right
         new_root.right = self.root
         
-        self.root.height = self.root.set_height()
-        new_root.height = new_root.set_height()
-        print('here_r', new_root.height)        
+        self.root.parent = new_root
+        print('here_r', self.root.parent.value)        
         return new_root
         
     def left_rotation(self):
@@ -75,44 +95,13 @@ class BST:
         self.root.right = new_root.left
         new_root.left = self.root
         
-        self.root.height = self.root.set_height()
-        new_root.height = new_root.set_height()
-        
-        print('here_l', new_root.height)
+        self.root.parent = new_root
+        print('here_l', self.root.parent.value)
         return new_root
-    
-    def balance_tree(self):
-        if self.root.balance_factor > 1:
-            if self.root.left.left.height >= \
-            self.root.left.right.height:
-                new_root = self.right_rotation()
-                
-            else:
-                self.root.left = self.left_rotation()
-                self.root = self.right_rotation()
-                
-            return new_root
         
-        if self.root.balance_factor < -1:
-            if self.root.right.right.height >= \
-            self.root.right.left.height:
-                new_root = self.left_rotation()
-                
-            else:
-                self.root.right = self.right_rotation()
-                self.root = self.left_rotation()
-            
-            return new_root
-        
-        
-    def return_treetop(self, tree, node_count, data_array):
-        if node_count%2 == 0:
-            median_height = (node_count - 1) // 2 
-        else:
-            median_height = (node_count) // 2
-        print('median height', median_height)
-        for key in data_array[:10]:
-            if Node(key).height == median_height:
+    def return_treetop(self, node_count, data_array):
+        for key in data_array[:5]:
+            if Node(key).parent == None:
                 return key
 
 def find_median():
@@ -120,16 +109,18 @@ def find_median():
     median_array = []
     tree = BST()
     node_count = 1
+    print('data array', data_array[:5], '\n')
     
     for node_val in data_array[:5]:
-        print('NODE COUNT', node_count)
         tree.insert(node_val)
+        print('\n', 'node:', Node(node_val).value)
         node_count += 1
-        tree.balance_tree()
-        median = tree.return_treetop(tree, node_count, data_array[:10]) 
+        
+        median = tree.return_treetop(node_count, data_array[:5]) 
+        print('median:', median)
         median_array.append(median)
-    
-#    return sum(median_array)%10000
+        
+    return 'sum(median_array)%10000'
     
     
 print(find_median())
