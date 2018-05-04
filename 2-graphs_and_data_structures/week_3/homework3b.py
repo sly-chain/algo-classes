@@ -69,35 +69,37 @@ class BST:
         
         if balance > 1:
             if current_node.left.balance_factor > 0:
-                new_root = self.right_rotation()
+                self.right_rotation()
             else:
-                new_root = self.left_rotation()
-                new_root = self.right_rotation()
+                self.left_rotation()
+                self.right_rotation()
+#            return new_root
         
         if balance < 1:
             if current_node.right.balance_factor < 0:
-                new_root = self.left_rotation()
+                self.left_rotation()
             else:
-                new_root = self.right_rotation()
-                new_root = self.left_rotation()
-                
+                self.right_rotation()
+                self.left_rotation()
+#            return new_root  
+               
     def right_rotation(self):
         new_root = self.root.left
         self.root.left = new_root.right
         new_root.right = self.root
         
-        self.root.parent = new_root
-        print('here_r', self.root.parent.value)        
-        return new_root
+#        self.root.parent = new_root
+        print('here_r', new_root.balance_factor, new_root.left.balance_factor, new_root.right.value)        
+#        return new_root
         
     def left_rotation(self):
         new_root = self.root.right
         self.root.right = new_root.left
         new_root.left = self.root
         
-        self.root.parent = new_root
-        print('here_l', self.root.parent.value)
-        return new_root
+#        self.root.parent = new_root
+        print('here_l', new_root.value, new_root.left.value)
+#        return new_root
         
     def return_treetop(self, node_count, data_array):
         for key in data_array[:5]:
