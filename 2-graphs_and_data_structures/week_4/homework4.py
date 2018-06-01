@@ -33,10 +33,13 @@ def find_pairs(data_array, target):
     hash_table = {}
     
     for i in data_array:
-        if target - i in data_array and target - i not in hash_table:
-            hash_table[i] = target - i
+        if target - i in data_array and i not in hash_table:
+            return True
 
-    print(hash_table)
-    return len(hash_table)
+#    print(hash_table)
+    return False
 
-print(find_pairs(data_array, 15054))
+
+for target in range(-10000, 10001):
+
+    find_pairs(data_array, target)
