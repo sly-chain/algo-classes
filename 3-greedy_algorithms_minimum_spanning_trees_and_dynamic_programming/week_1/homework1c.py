@@ -45,24 +45,25 @@ def create_graph(file):
 
 
 def prim(graph):
-    heap_map = {key: 1000000 for key, value in graph.items()}
+    heap_map = {elem:1000000 for elem in range(1, 501)}
     heap_map[1] = 0
     vertex_edge_map = {1: [1,1]}
     edge_cost = {}
     solution = []
     
     while heap_map:
-        
         current = min(heap_map, key=heap_map.get)
-        solution.append(vertex_edge_map[current])
-
-        for vertex, cost in graph[current].items():
-            if vertex in heap_map:
-                if cost < heap_map[vertex]:
-                    heap_map[vertex] = cost
-                    vertex_edge_map[vertex] = [current, vertex]
-                    edge_cost[vertex] = cost
-                        
+#        print(current)
+        
+        if current in graph:
+            for vertex, cost in graph[current].items():
+                if vertex not in vertex_edge_map:
+                    if cost < heap_map[vertex]:
+                        heap_map[vertex] = cost
+                        edge_cost[vertex] = cost
+                vertex_edge_map[vertex] = [current, vertex]
+                            
+            solution.append(vertex_edge_map[current])
         heap_map.pop(current)
     
     print('total cost', sum(edge_cost.values()))
@@ -71,20 +72,11 @@ def prim(graph):
 
 
 
-"""
-1. create graph
-2. go through random vertex as source with edge cost= 0 (extract min)
-3. update edge cost values in heap map
-4. keep track of edge that contributes to the minimum value for each vertex
-5. extract min 
-6. add edge of that vertex to results list
-
-"""
-
 import heapq
 
 def prim_heapq(graph):
-    heap_map = {key: 1000000 for key, value in graph.items()}
+    heap_map = {elem:1000000 for elem in range(0, 501)}
+    
     heap_map[1] = 0
     heap_que = [(0, 1)]
     vertex_edge_map = {1: [1,1]}
@@ -94,18 +86,19 @@ def prim_heapq(graph):
     
     while heap_que:
         current = heapq.heappop(heap_que)[1]
-        solution.append(vertex_edge_map[current])
+#        print(current)
         
-        for vertex, cost in graph[current].items():
-            if vertex in heap_map:
-                if cost < heap_map[vertex]:
-                    heap_map[current] = cost
-                    heapq.heappush(heap_que, (cost, vertex))
-                    vertex_edge_map[vertex] = [current, vertex]
-                    edge_cost[vertex] = cost
-         
-                heap_map.pop(current)
-    
+        if current in graph:
+            for vertex, cost in graph[current].items():
+                if vertex not in vertex_edge_map:
+                    if cost < heap_map[vertex]:
+                        heap_map[vertex] = cost
+                        heapq.heappush(heap_que, (cost, vertex))
+                        edge_cost[vertex] = cost
+                        vertex_edge_map[vertex] = [current, vertex]
+             
+            solution.append(vertex_edge_map[current])
+   
     print('total cost', sum(edge_cost.values()))
     return solution  
 
@@ -113,8 +106,13 @@ def prim_heapq(graph):
 
 
 graph = create_graph('edges.txt')
+#prim(graph)
+#prim_heapq(graph)
+
+
+import time
+start_time = time.time()
 prim(graph)
+print("--- %s seconds ---" % (time.time() - start_time))
 prim_heapq(graph)
-
-
-
+print("--- %s seconds ---" % (time.time() - start_time))
