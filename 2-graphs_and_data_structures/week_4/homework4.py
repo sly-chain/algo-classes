@@ -23,23 +23,29 @@ def create_data_array(file):
     data_array = []
     with open(file) as f:
         data_array = list(map(int, f.read().splitlines()))
-    return data_array
+    return sorted(data_array)
 
 data_array = create_data_array('2sum.txt')
 
 
 
 def find_pairs(data_array, target):
-    hash_table = {}
     
-    for i in data_array:
-        if target - i in data_array and i not in hash_table:
+    for x in data_array:
+        y = target - x
+        if y in data_array:
             return True
-
-#    print(hash_table)
+        
     return False
 
 
-for target in range(-10000, 10001):
+def find_answer(data_array):
+    results = []
+    
+    for target in range(-10000, 10000):
+        results.append(find_pairs(data_array, target))
+        
+    return sum(results)
 
-    find_pairs(data_array, target)
+
+print(find_answer(data_array))
