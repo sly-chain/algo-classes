@@ -22,6 +22,7 @@ def create_graph(file):
          
     return graph
 
+graph = create_graph('dijkstraData.txt')
 
 # source vertex distance = 0
 # all other vertices start at 1,000,000
@@ -39,12 +40,12 @@ def dijkstra(graph, source, sought):
     # cycle through graph to find minimum distances to source
     while heap_map:
         current = min(heap_map, key=heap_map.get)
-        
+#        print(current)
         for vertex, distance in graph[current].items():
             if vertex not in distance_map:
-                    new_distance = heap_map[current] + distance
-                    if distance < heap_map[vertex]:
-                        heap_map[vertex] = new_distance
+                new_distance = heap_map[current] + distance
+                if distance < heap_map[vertex]:
+                    heap_map[vertex] = new_distance
                         
         distance_map[current] = heap_map[current]
         heap_map.pop(current)
@@ -56,12 +57,12 @@ def dijkstra(graph, source, sought):
         solution.append(distance_map[vertex])
 #        print('here', distance_map[vertex], sep=' ', end=',', flush=True)
     
+    print('here')
     return ','.join(str(i) for i in solution)
         
 
-#graph = create_graph('dijkstraData.txt')
-#print(dijkstra(graph, 1, [7,37,59,82,99,115,133,165,188,197]))
-
+print(dijkstra(graph, 1, [7,37,59,82,99,115,133,165,188,197]))
+#
 
 
 
@@ -72,29 +73,29 @@ import heapq
 
 def dijkstra_heapq(graph, source, sought):
     heap_map = {key: 1000000 for key, value in graph.items()}
-#    heap_map[source] = 0
-    heap_que = [(source, 0)]
-    distance_map = {source: 0}
+    heap_map[source] = 0
+    heap_que = [(0, source)]
+    
+    distance_map = {}
     solution = []
     
     while heap_que:
-        current = heapq.heappop(heap_que)[0]
-
+        current = heapq.heappop(heap_que)[1]
+#        print(current)
+            
         for vertex, distance in graph[current].items():
             if vertex not in distance_map:
-                    if distance < heap_map[vertex]:
-                        new_distance = heap_map[current] + distance
-                        heap_map[vertex] = new_distance
-                        heapq.heappush(heap_que, (vertex, new_distance))
-                        
-#        distance_map[current] = heap_map[current]
-        
-    
-    
+                new_distance = heap_map[current] + distance
+                if distance < heap_map[vertex]:
+                    heap_map[vertex] = new_distance
+                    heapq.heappush(heap_que, (new_distance, vertex))
+                    
+        distance_map[current] = heap_map[current]
+                    
     for vertex in sought:
         solution.append(distance_map[vertex])
     
-#    print(distance_map)
+    print('heap')
     return ','.join(str(i) for i in solution)
 
 
@@ -111,12 +112,19 @@ def dijkstra_heapq(graph, source, sought):
 # =============================================================================
 
 
-
-graph = create_graph('dijkstraData.txt')
 print(dijkstra_heapq(graph, 1, [7,37,59,82,99,115,133,165,188,197]))
 
 
-
+# =============================================================================
+# heap = []
+# data = [(1, 'J'), (4, 'N'), (3, 'H'), (2, 'O')]
+# for item in data:
+#      heapq.heappush(heap, item)
+#      print(heap)
+# while heap:
+#      print(heap)
+#      print(heapq.heappop(heap)[1])
+# =============================================================================
 
 
 
