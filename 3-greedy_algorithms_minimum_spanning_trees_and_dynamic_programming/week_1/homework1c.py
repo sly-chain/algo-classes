@@ -28,7 +28,8 @@ def create_graph(file):
     graph = {}
     
     with open(file) as adjacency_list:
-        next(adjacency_list)
+        first_line = adjacency_list.readline()
+        
         for line in adjacency_list:
             single_line = [int(s) for s in line.split()]
             vertex = single_line[0]
@@ -39,13 +40,15 @@ def create_graph(file):
                 graph[vertex].update({node: cost})
             else:
                 graph[vertex] = {node: cost}
-    
-    return graph
+                
+        graph_details = [int(s) for s in first_line.split()]
+        
+    return graph_details, graph
 
 
 
-def prim(graph):
-    heap_map = {elem:1000000 for elem in range(1, 501)}
+def prim(graph_details, graph):
+    heap_map = {elem:1000000 for elem in range(1, (graph_details[0] + 1))}
     heap_map[1] = 0
     vertex_edge_map = {1: [1,1]}
     edge_cost = {}
@@ -74,8 +77,8 @@ def prim(graph):
 
 import heapq
 
-def prim_heapq(graph):
-    heap_map = {elem:1000000 for elem in range(0, 501)}
+def prim_heapq(graph_details, graph):
+    heap_map = {elem:1000000 for elem in range(1, (graph_details[0] + 1))}
     
     heap_map[1] = 0
     heap_que = [(0, 1)]
@@ -105,14 +108,14 @@ def prim_heapq(graph):
 
 
 
-graph = create_graph('edges.txt')
-#prim(graph)
-#prim_heapq(graph)
+graph_details, graph = create_graph('edges.txt')
+#prim(graph_details, graph)
+#prim_heapq(graph_details, graph)
 
 
 import time
 start_time = time.time()
-prim(graph)
+prim(graph_details, graph)
 print("--- %s seconds ---" % (time.time() - start_time))
-prim_heapq(graph)
+prim_heapq(graph_details, graph)
 print("--- %s seconds ---" % (time.time() - start_time))
