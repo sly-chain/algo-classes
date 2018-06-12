@@ -45,46 +45,50 @@ def create_graph(file):
 
 
 def find_parent(v):
-    if parent[v] != v:
-        find_parent(parent[v])
-    return parent[v]
+    if parent[v] == v:
+        return parent[v]
+    return find_parent(parent[v])
 
 
 def update_parent(v, n):
     v_root = find_parent(v)
     n_root = find_parent(n)
     
+#    v_root = parent[v]
+#    n_root = parent[n]
+    
     if rank[n_root] < rank[v_root]:
         parent[n_root] = v_root
         
-    else:
+    elif rank[v_root] < rank[n_root]:
         parent[v_root] = n_root
-        if rank[v_root] == rank[n_root]:
-            rank[v_root] += 1
+        
+    else:
+        parent[n_root] = v_root
+        rank[v_root] += 1
 
 
 
 def kruskal():
-    iteration = 0
     i = 0
     result = []
     
-#    while iteration < graph_details[0]-1:
-#        print('iteration', iteration)
-    while iteration < graph_details[0]-1:
-        print(iteration)
-        subset = graph[i]
-        i += 1
-        root_1 = find_parent(subset[1])
-        root_2 = find_parent(subset[2])
-#        print('roots', root_1, root_2)
+#    while i < graph_details[0]-1:
+    for subset in graph:
+#        print(subset)
+        parent_1 = find_parent(subset[1])
+        parent_2 = find_parent(subset[2])
+#        root_1 = parent[subset[1]]
+#        root_2 = parent[subset[2]]
         
-        if root_1 != root_2:
+        if parent_1 != parent_2:
+            print('roots', parent_1, parent_2)
             result.append(subset[0])
-            iteration += 1
+            i += 1
             update_parent(subset[1], subset[2])
-#            print('parent', parent, '\n', 'rank', rank)
+#                print('parent', parent, '\n', 'rank', rank)
             
+    print(result)
     return sum(result)
     
 
@@ -94,10 +98,10 @@ rank = {elem:0 for elem in range(1, graph_details[0] + 1)}
 print(kruskal())
 
 
-#graph_details = [5, 10]
+#graph_details = [4, 10]
 #graph = [[4, 2, 3], [5, 0, 3], [6, 0, 2], [10, 0, 1], [15, 1, 3]]
-#parent = [elem for elem in range (0,4)]
-#rank = [0 for elem in range (0,4)]
+#parent = {elem:elem for elem in range(0, graph_details[0])}
+#rank =  {elem:0 for elem in range(0, graph_details[0])}
 #print(kruskal())
     
     
