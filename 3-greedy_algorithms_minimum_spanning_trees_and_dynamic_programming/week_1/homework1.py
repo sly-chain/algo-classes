@@ -36,3 +36,4 @@ jobs_df['finishing time'] = jobs_df['length'].cumsum()
 jobs_df['weighted average'] = jobs_df['weight'] * jobs_df['finishing time']
 
 print(jobs_df['weighted average'].sum())
+# 69119377652

@@ -29,7 +29,8 @@ def create_graph(file):
     
     with open(file) as adjacency_list:
         first_line = adjacency_list.readline()
-        
+        graph_details = [int(s) for s in first_line.split()]
+
         for line in adjacency_list:
             single_line = [int(s) for s in line.split()]
             vertex = single_line[0]
@@ -41,8 +42,9 @@ def create_graph(file):
             else:
                 graph[vertex] = {node: cost}
                 
+            
         graph_details = [int(s) for s in first_line.split()]
-        
+    
     return graph_details, graph
 
 
@@ -56,18 +58,27 @@ def prim(graph_details, graph):
     
     while heap_map:
         current = min(heap_map, key=heap_map.get)
-#        print(current)
-        
-        if current in graph:
-            for vertex, cost in graph[current].items():
-                if vertex not in vertex_edge_map:
-                    if cost < heap_map[vertex]:
-                        heap_map[vertex] = cost
-                        edge_cost[vertex] = cost
-                vertex_edge_map[vertex] = [current, vertex]
-                            
-            solution.append(vertex_edge_map[current])
+#        print(current, '\n')
+        solution.append(vertex_edge_map[current])
         heap_map.pop(current)
+        
+        if current in graph.keys():
+            for node, cost in graph[current].items():
+                if node in heap_map.keys() and cost < heap_map[node]:
+                    heap_map[node] = cost
+                    edge_cost[node] = cost
+                    vertex_edge_map[node] = [current, node]
+#    print('cost', edge_cost.values())
+                    
+# =============================================================================
+#             for vertex, cost in graph[current].items():
+#                 if vertex not in vertex_edge_map:
+#                     if cost < heap_map[vertex]:
+#                         heap_map[vertex] = cost
+#                         edge_cost[vertex] = cost
+#                 vertex_edge_map[vertex] = [current, vertex]
+# =============================================================================
+                            
     
     print('total cost', sum(edge_cost.values()))
     return solution          
@@ -90,18 +101,16 @@ def prim_heapq(graph_details, graph):
     while heap_que:
         current = heapq.heappop(heap_que)[1]
 #        print(current)
+        solution.append(vertex_edge_map[current])
         
-        if current in graph:
+        if current in graph.keys():
             for vertex, cost in graph[current].items():
-                if vertex not in vertex_edge_map:
-                    if cost < heap_map[vertex]:
-                        heap_map[vertex] = cost
-                        heapq.heappush(heap_que, (cost, vertex))
-                        edge_cost[vertex] = cost
-                        vertex_edge_map[vertex] = [current, vertex]
+                if vertex in heap_map and cost < heap_map[vertex]:
+                    heap_map[vertex] = cost
+                    heapq.heappush(heap_que, (cost, vertex))
+                    edge_cost[vertex] = cost
+                    vertex_edge_map[vertex] = [current, vertex]
              
-            solution.append(vertex_edge_map[current])
-   
     print('total cost', sum(edge_cost.values()))
     return solution  
 
@@ -119,3 +128,5 @@ prim(graph_details, graph)
 print("--- %s seconds ---" % (time.time() - start_time))
 prim_heapq(graph_details, graph)
 print("--- %s seconds ---" % (time.time() - start_time))
+
+# -3612829

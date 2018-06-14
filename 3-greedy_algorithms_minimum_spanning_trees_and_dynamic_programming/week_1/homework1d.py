@@ -28,8 +28,8 @@ def create_graph(file):
     
     with open(file) as adjacency_list:
         first_line = adjacency_list.readline()
-        next(adjacency_list)
-        
+        graph_details = [int(s) for s in first_line.split()]
+
         for line in adjacency_list:
             single_line = [int(s) for s in line.split()]
             vertex = single_line[0]
@@ -37,7 +37,6 @@ def create_graph(file):
             cost = single_line[2]
             
             edges_graph.append([cost, vertex, node])
-            graph_details = [int(s) for s in first_line.split()]
     
     return graph_details, sorted(edges_graph)
 
@@ -53,9 +52,6 @@ def find_parent(v):
 def update_parent(v, n):
     v_root = find_parent(v)
     n_root = find_parent(n)
-    
-#    v_root = parent[v]
-#    n_root = parent[n]
     
     if rank[n_root] < rank[v_root]:
         parent[n_root] = v_root
@@ -78,17 +74,12 @@ def kruskal():
 #        print(subset)
         parent_1 = find_parent(subset[1])
         parent_2 = find_parent(subset[2])
-#        root_1 = parent[subset[1]]
-#        root_2 = parent[subset[2]]
         
         if parent_1 != parent_2:
-            print('roots', parent_1, parent_2)
             result.append(subset[0])
             i += 1
             update_parent(subset[1], subset[2])
-#                print('parent', parent, '\n', 'rank', rank)
             
-    print(result)
     return sum(result)
     
 
@@ -96,6 +87,7 @@ graph_details, graph = create_graph('edges.txt')
 parent = {elem:elem for elem in range(1, graph_details[0] + 1)}
 rank = {elem:0 for elem in range(1, graph_details[0] + 1)}
 print(kruskal())
+# -3612829
 
 
 #graph_details = [4, 10]
