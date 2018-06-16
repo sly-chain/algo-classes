@@ -50,17 +50,19 @@ def create_graph(file):
 
 
 def prim(graph_details, graph):
-    heap_map = {elem:1000000 for elem in range(1, (graph_details[0] + 1))}
+    heap_map = {elem:1000000 for elem in range(1, (graph_details[0]))}
     heap_map[1] = 0
-    vertex_edge_map = {1: [1,1]}
+    vertex_edge_map = {}
     edge_cost = {}
     solution = []
     
     while heap_map:
         current = min(heap_map, key=heap_map.get)
 #        print(current, '\n')
-        solution.append(vertex_edge_map[current])
         heap_map.pop(current)
+        
+        if vertex_edge_map:
+            solution.append(vertex_edge_map[current])
         
         if current in graph.keys():
             for node, cost in graph[current].items():
@@ -70,16 +72,6 @@ def prim(graph_details, graph):
                     vertex_edge_map[node] = [current, node]
 #    print('cost', edge_cost.values())
                     
-# =============================================================================
-#             for vertex, cost in graph[current].items():
-#                 if vertex not in vertex_edge_map:
-#                     if cost < heap_map[vertex]:
-#                         heap_map[vertex] = cost
-#                         edge_cost[vertex] = cost
-#                 vertex_edge_map[vertex] = [current, vertex]
-# =============================================================================
-                            
-    
     print('total cost', sum(edge_cost.values()))
     return solution          
     
@@ -89,11 +81,11 @@ def prim(graph_details, graph):
 import heapq
 
 def prim_heapq(graph_details, graph):
-    heap_map = {elem:1000000 for elem in range(1, (graph_details[0] + 1))}
+    heap_map = {elem:1000000 for elem in range(1, (graph_details[0])+1)}
     
     heap_map[1] = 0
     heap_que = [(0, 1)]
-    vertex_edge_map = {1: [1,1]}
+    vertex_edge_map = {}
     edge_cost = {}
     solution = []
     
@@ -101,7 +93,9 @@ def prim_heapq(graph_details, graph):
     while heap_que:
         current = heapq.heappop(heap_que)[1]
 #        print(current)
-        solution.append(vertex_edge_map[current])
+        
+        if vertex_edge_map:
+            solution.append(vertex_edge_map[current])
         
         if current in graph.keys():
             for vertex, cost in graph[current].items():
