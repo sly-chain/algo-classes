@@ -38,56 +38,115 @@ explicitly looking at every pair of nodes?
 """
 
 import time
+import itertools
+
 
 def create_graph(file):
     graph = {}
     
     with open(file) as adjacency_list:
         first_line = adjacency_list.readline()
-        graph_details = [int(s) for s in first_line.split()][0]
+        graph_details = [int(s) for s in first_line.split()]
         i = 1
 
         for line in adjacency_list:
             single_line = [int(s) for s in line.split()]
             
-            graph[i] = single_line
-    
+            if single_line not in graph.values():
+                graph[i] = single_line
             i+=1
-            
+
     return graph_details, graph
+
+
+#def hamming_dist(a, b):
+#    return sum(ch1 != ch2 for ch1, ch2 in zip(a, b))
+#
+#
+#def flip_bit(number, n):
+#    return (number // 10**n % 10)^1
+
+
+
+#def distance_one(current):
+#    one_space = []
+#    i = 1
+#    for i in range(len(current)):
+#        test = current[:]
+#        test[i]^=1
+#        print(test)
+#        one_space.append(test)
+#        i += 1
+#    
+#    return one_space
+        
+
+def bit_array(current, num):
+    n_spaces = []
+    combos = list(itertools.permutations(range(len(current)), num))
     
+    for c in combos:
+        test = current[:]
+        for n in range(num):
+            test[c[n]] ^= 1
+            
+        n_spaces.append(test)
     
-def hamming_distance(a,b):
-    return sum(ch1 != ch2 for ch1, ch2 in zip(a, b))
+    return n_spaces
 
 
 def k_cluster():
-    node_list = [elem for elem in range(1, graph_details+1)]
-#    print('node list', len(node_list), node_list)
+    node_list = graph.copy()
     nodes_length = len(graph)
+    k_array = []
     
     while node_list:
-        current = node_list.pop(0)
-            
-        for n in node_list:
-#            print('n', n)
-            d = hamming_distance(graph[current], graph[n])
-#            print('d', d)
-            if d <= 2:
-#                print('here', n, d)
+        nodes = node_list.copy()
+        node_keys = list(nodes.keys())
+        current = node_list.pop(node_keys[0])
+        bit_flip_array = []
+        
+        one_space = bit_array(current, 1)
+        two_space = bit_array(current, 2)
+        bit_flip_array.extend(one_space)
+        bit_flip_array.extend(two_space)
+        
+        for k, v in nodes.items():
+            if v in bit_flip_array:
+#                node_list.pop(k)
+                k_array.append(k)
                 nodes_length -= 1
-                break
-#        print('end', '\n')   
+    
     return nodes_length  
 
 
 
 
 start_time = time.time()
-graph_details, graph = create_graph('clustering_big.txt')  
+
+#graph_details, graph = create_graph('test_cases/test1.txt')
+#3946
+
+#graph_details, graph = create_graph('test_cases/test2.txt')
+#127
+
+#graph_details, graph = create_graph('test_cases/test3.txt')
+#15
+
+graph_details, graph = create_graph('test_cases/test4.txt')
+#1371
+
+#graph_details, graph = create_graph('clustering_big.txt')  
+#6119
+
 print('end', k_cluster())
 print("--- %s seconds ---" % (time.time() - start_time))
 
-#end 54097
-#--- 34908.65449810028 seconds ---
+
+#end 3951
+#--- 177.6652488708496 seconds ---
+
+
+#end 198788
+#--- 1443.6360261440277 seconds ---
 
