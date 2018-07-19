@@ -38,146 +38,93 @@ explicitly looking at every pair of nodes?
 """
 
 import time
-import itertools
-import random
+
+class Node:
+    def __init__(self, index, label):
+        self.index = index
+        self.label = label
+#        self.rank = None
+#        self.parent = None
 
 
 class Graph:
-
     def __init__(self, file):
         self.file = file
-        self.clusters = {}
-        self.rank = {}
         self.graph_details, self.graph = self.create_graph()
-        self.parent = {}
+        self.nodes_length = len(self.graph)
+#        self.rank = []
     
     
     def create_graph(self):
-        graph = {}
+        graph = []
         
         with open(self.file) as adjacency_list:
             first_line = adjacency_list.readline()
             graph_details = [int(s) for s in first_line.split()]
+            seen = set()
             i = 1
     
             for line in adjacency_list:
-                single_line = [int(s) for s in line.split()]
+                single_line = str(line.strip().replace(' ', ''))
+                node = Node(i, single_line)
                 
-                if single_line not in graph.values():
-                    graph[i] = single_line
+                if node.label not in seen:
+                    graph.append(node)
+                
+                seen.add(node.label)
                 i+=1
-    
+        
         return graph_details, graph
     
     
-    def find_parent(self, v):
-        if self.parent[v] == v:
-            return self.parent[v]
-        return self.find_parent(self.parent[v])
-    
-    
-    def update_parent(self, v, n):
-        v_root = self.find_parent(v)
-        n_root = self.find_parent(n)
-        
-        if self.rank[n_root] < self.rank[v_root]:
-            self.parent[n_root] = v_root
-            
-        elif self.rank[v_root] < self.rank[n_root]:
-            self.parent[v_root] = n_root
-            
-        else:
-            self.parent[n_root] = v_root
-            self.rank[v_root] += 1
-    
-    
-    
-    def kruskal(self):
-        i = 0
-        result = []
-        
-        for subset in self.graph:
-            parent_1 = self.find_parent(subset[1])
-            parent_2 = self.find_parent(subset[2])
-            
-            if parent_1 != parent_2:
-                result.append(subset[0])
-                i += 1
-                self.update_parent(subset[1], subset[2])
-                
-        return sum(result)
-    
-    
-    def bit_array(self, current, num):
-        n_spaces = []
-        combos = list(itertools.permutations(range(len(current)), num))
-        
-        for c in combos:
-            test = current[:]
-            for n in range(num):
-                test[c[n]] ^= 1
-                
-            n_spaces.append(test)
-        
-        return n_spaces
+    def hamming_dist(self, a, b):
+        return sum(ch1 != ch2 for ch1, ch2 in zip(a, b))
     
     
     def k_cluster(self):
-        self.rank = {elem:0 for elem in range(1, self.graph_details[0] + 1)}
-        self.parent = {elem:elem for elem in range(1, self.graph_details[0] + 1)}
-        
+        print(len(self.graph))
         node_list = self.graph.copy()
-        nodes_length = len(self.graph)
-        
-        bit_flip_array = []
+#        self.parent = [elem for elem in range(self.graph_details[0])]
+#        self.rank = [0 for elem in range(self.graph_details[0])]
         
         while node_list:
             nodes = node_list.copy()
-            nodes_keys = list(nodes.keys())
-            nodes = node_list.copy()
-            
-            current = nodes_keys[0]
-            bits = node_list.pop(current)
-            
-            parent1 = self.find_parent(current)
-            
-            
-            for k, v in nodes.items():
-                parent2 = self.find_parent(k)
-                
-                if parent1 != parent2:
-                    bit_flip_array = []
-                    one_space = self.bit_array(bits, 1)
-                    bit_flip_array.extend(one_space)
-#                    two_space = self.bit_array(bits, 2)
-#                    bit_flip_array.extend(two_space)
-                    
-                    if v in bit_flip_array:
-                        self.update_parent(current, k)
-#                        node_list.pop(k)
-                        nodes_length -= 1
-            
-        return nodes_length
-                    
-            
+            current = node_list.pop(0)
 
+            for n in nodes:
+                if self.hamming_dist(current.label, n.label) in [1, 2]:
+                    node_list.remove(n)
+#                        node_list.remove(current)
+                    self.nodes_length -= 1
+            
+        return self.nodes_length
+                    
 
 
 start_time = time.time()
-g = Graph('test_cases/test1.txt')
-#3946
+#g = Graph('test_cases/test1.txt')
+#4096 -- 3946
+#end 3950
+#--- 32.82023501396179 seconds ---
 
 #g = Graph('test_cases/test2.txt')
-#127
+#128 -- 127
 
 #g = Graph('test_cases/test3.txt')
-#15
+#16 -- 15
 
-#g = Graph('test_cases/test3.txt')
-#1371
+#g = Graph('test_cases/test4.txt')
+#65536 -- 1371
+#end 25062
+#--- 2805.9299211502075 seconds ---
+
+g = Graph('test_cases/test5.txt')
+#16384 -- 8714
+#end 11238
+#--- 326.2632009983063 seconds ---
 
 #g = Graph('clustering_big.txt')
-#6119
+#200000 -- 6119
 
 print('end', g.k_cluster())
 print("--- %s seconds ---" % (time.time() - start_time))

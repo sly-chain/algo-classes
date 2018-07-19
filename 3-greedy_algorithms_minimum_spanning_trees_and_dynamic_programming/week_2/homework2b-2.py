@@ -55,14 +55,10 @@ def create_graph(file):
             if single_line not in graph.values():
                 graph[i] = single_line
             i+=1
-
+            
     return graph_details, graph
 
 
-#def hamming_dist(a, b):
-#    return sum(ch1 != ch2 for ch1, ch2 in zip(a, b))
-#
-#
 #def flip_bit(number, n):
 #    return (number // 10**n % 10)^1
 
@@ -103,6 +99,7 @@ def k_cluster():
     while node_list:
         nodes = node_list.copy()
         node_keys = list(nodes.keys())
+#        print(len(node_list))
         current = node_list.pop(node_keys[0])
         bit_flip_array = []
         
@@ -111,13 +108,13 @@ def k_cluster():
         bit_flip_array.extend(one_space)
         bit_flip_array.extend(two_space)
         
-        for k, v in nodes.items():
+        for k, v in node_list.items():
             if v in bit_flip_array:
-#                node_list.pop(k)
+                nodes.pop(k)
                 k_array.append(k)
                 nodes_length -= 1
     
-    return nodes_length  
+    return nodes_length, len(nodes)  
 
 
 
@@ -125,26 +122,33 @@ def k_cluster():
 start_time = time.time()
 
 #graph_details, graph = create_graph('test_cases/test1.txt')
-#3946
+#4096 -- 3946
+#end (3946, 1)
+#--- 169.542249917984 seconds ---
 
 #graph_details, graph = create_graph('test_cases/test2.txt')
-#127
+#128 -- 127
 
 #graph_details, graph = create_graph('test_cases/test3.txt')
-#15
+#16 -- 15
 
 graph_details, graph = create_graph('test_cases/test4.txt')
-#1371
+#65536 -- 1371
+
+#graph_details, graph = create_graph('test_cases/test5.txt')
+#16384 -- 8714
+#end (8270, 1)
+#--- 2368.702915906906 seconds ---
+
 
 #graph_details, graph = create_graph('clustering_big.txt')  
-#6119
+#200000 -- 6119
 
 print('end', k_cluster())
 print("--- %s seconds ---" % (time.time() - start_time))
 
 
-#end 3951
-#--- 177.6652488708496 seconds ---
+
 
 
 #end 198788
