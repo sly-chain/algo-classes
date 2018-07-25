@@ -42,11 +42,14 @@ class Node:
         self.right = right
 
     def is_leaf(self):
-        return self.left is None and self.right is None
+        return self.symbol is not None
         
         
     def __lt__(self, other):
         return self.weight < other.weight
+    
+    def __repr__(self):
+        return str((self.symbol, self.weight, self.left, self.right))
 
 
 class Huffman:
@@ -63,8 +66,8 @@ class Huffman:
             i = 1
             
             for line in adjacency_list:
-#                single_line = int(line)
-                node = Node(i, line, None, None)
+                single_line = int(line.rstrip())
+                node = Node(i, single_line, None, None)
                 heapq.heappush(graph, node)
                 i += 1
                 
@@ -77,35 +80,33 @@ class Huffman:
         while len(heap_que) > 1:
             node1 = heapq.heappop(heap_que)
             node2 = heapq.heappop(heap_que)
-            
             node = Node(None, node1.weight + node2.weight, node1, node2)
-#            node.left = node1
-#            node.right = node2
-        
             heapq.heappush(heap_que, node)
             
         return heap_que
     
     
-    def get_code(self, current, code):
-        code = []
-        if current.left:
-#            print('left', current.left.symbol)
-            code.append(0)
-            self.get_code(current.left, code)
+    def get_code(self, current, i=0, code=[], result=[]):
+
+        if current.left is not None:
+            if current.symbol is None:
+                code.append(0)
+                self.get_code(current.left, i+1, code)
         
-        if current.right:
-#            print('right', current.right.weight)
-            code.append(1)
-            self.get_code(current.right, code)
-            
+        if current.right is not None:
+            if current.symbol is None:
+                code.append(1)
+                self.get_code(current.right, i+1, code)
+        
         if current.is_leaf():
-            return code
+            result.append(''.join(map(str, code[:i])))
+        
+        return result
     
     
     def huffman(self):
-        
-        return self.get_code(self.root, [])
+        result_array = self.get_code(self.root)
+        return len(min(result_array)), len(max(result_array))
         
 
 start_time = time.time()
@@ -114,11 +115,14 @@ start_time = time.time()
 #Min length = 2
 #Max length = 5
 
-h = Huffman('test_cases/test2.txt')
+
+#h = Huffman('test_cases/test2.txt')
 #Min length = 3
 #Max length = 6
 
-#h = Huffman('huffman.txt')
+h = Huffman('huffman.txt')
+#Min length = 9
+#Max length = 19
 
 print('end', h.huffman())
 print("--- %s seconds ---" % (time.time() - start_time))
