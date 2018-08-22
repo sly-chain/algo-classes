@@ -56,26 +56,33 @@ def knapsack_big():
             else:
                 table[i,j] = max(table[i,j-1], table[i-weight, j-1] + value)
 
-    return table[graph_details][0][-1]
+    print(table)
+    return table[graph_details[0]][graph_details[1]]
+#    print('stop')
 
 
 import time
 start_time = time.time()
 
-graph_details, graph = create_graph('knapsack1.txt') 
+#graph_details, graph = create_graph('knapsack1.txt') 
 #2493893
+#--- 1.253927230834961 seconds ---
 
 #graph_details, graph = create_graph('knapsack_big.txt') 
 #4243395
+#--- 5076.164584875107 seconds ---
 
-#graph_details, graph = create_graph('test_cases/test4.txt') 
+graph_details, graph = create_graph('test_cases/test1.txt') 
 #147
+#--- 0.002542734146118164 seconds ---
 
 #graph_details, graph = create_graph('test_cases/test2.txt') 
 #5399
+#--- 0.10226893424987793 seconds ---
 
-#graph_details, graph = create_graph('test_cases/test6.txt') 
+#graph_details, graph = create_graph('test_cases/test3.txt') 
 #539
+#--- 0.01104593276977539 seconds ---
 
 
 print('end', knapsack_big())
