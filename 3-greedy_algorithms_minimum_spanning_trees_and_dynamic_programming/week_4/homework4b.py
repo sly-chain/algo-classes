@@ -37,55 +37,48 @@ def create_graph(file):
             single_line = [int(s) for s in line.split()]
             graph.append(single_line)
     
-    return graph_details, graph
-
+    return graph_details[0], graph_details[1], graph
 
 
 def knapsack_big():
-    table = np.pad(np.zeros((graph_details[0], graph_details[1])), (0,1), 'constant')
+    table = np.zeros((n, capacity))
     
-    for j in range(1, graph_details[1] + 1):
-#        print('j', j)
-        value = graph[j-1][0]
-        weight = graph[j-1][1]
+    for i in range(n):
+        value = graph[i-1][0]
+        weight = graph[i-1][1]
 
-        for i in range(1, graph_details[0] + 1):
-#            print(i)
-            if weight > i:
-                table[i,j] = table[i,j-1]
+        for w in range(capacity):
+            if w >= weight:
+                table[i,w] = max(table[i-1,w], table[i-1,w-weight] + value)
             else:
-                table[i,j] = max(table[i,j-1], table[i-weight, j-1] + value)
-
-    print(table)
-    return table[graph_details[0]][graph_details[1]]
-#    print('stop')
+                table[i,w] = table[i-1,w]
+            
+    return table[n-1][capacity-1]
 
 
 import time
 start_time = time.time()
 
-#graph_details, graph = create_graph('knapsack1.txt') 
+#capacity, n, graph = create_graph('knapsack1.txt') 
 #2493893
 #--- 1.253927230834961 seconds ---
 
-#graph_details, graph = create_graph('knapsack_big.txt') 
+capacity, n, graph = create_graph('knapsack_big.txt') 
 #4243395
 #--- 5076.164584875107 seconds ---
 
-graph_details, graph = create_graph('test_cases/test1.txt') 
+#capacity, n, graph = create_graph('test_cases/test1.txt') 
 #147
 #--- 0.002542734146118164 seconds ---
 
-#graph_details, graph = create_graph('test_cases/test2.txt') 
+#capacity, n, graph = create_graph('test_cases/test2.txt') 
 #5399
 #--- 0.10226893424987793 seconds ---
 
-#graph_details, graph = create_graph('test_cases/test3.txt') 
+#capacity, n, graph = create_graph('test_cases/test3.txt') 
 #539
 #--- 0.01104593276977539 seconds ---
 
 
 print('end', knapsack_big())
-
-
 print("--- %s seconds ---" % (time.time() - start_time))
