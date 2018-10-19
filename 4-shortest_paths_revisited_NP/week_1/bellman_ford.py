@@ -20,49 +20,66 @@ large.txt
 For fun, try computing the shortest shortest path of the graph in the file above.
 """
 
+### BELLMAN FORD ###
+
 
 def create_graph(file):
-    graph = []
+    graph = {}
+    vertices_list = []
     
     with open(file) as adjacency_list:
-#            
-        for line in adjacency_list:
-            graph.append([int(s) for s in line.split()])
+        first_line = adjacency_list.readline()
+        graph_details = [int(s) for s in first_line.split()]
         
-    return graph[0], graph[1:]
-
-
-graph_details, graph = create_graph('g1.txt')
-
+        for line in adjacency_list:
+            l = [int(s) for s in line.split()]
+            graph[(l[0], l[1])] = l[2]
+            
+            if l[0] not in vertices_list:
+                vertices_list.append(l[0])
+        
+    return graph_details[0], graph_details[1], graph, vertices_list
 
 
 def bellman_ford():
+    dist = {vertex: float('Inf') for vertex in vertices_list}
+    dist[vertices_list[0]] = 0
+#    parent = {vertex: vertex for vertex in vertices_list}
     
+    for i in range(vertices-1):
+        for u, v in graph:
+            if dist[v] > dist[u] + graph[(u, v)]:
+                dist[v] = dist[u] + graph[(u, v)]
+#                parent[u] = parent[v]
+                
+    #negative cycle check
+    for edge in graph:
+        if dist[edge[0]] + graph[edge] < dist[edge[1]]:
+            print('Graph contains negative weight cycle')
+            return
     
+    return min(dist, key=dist.get)
     
-    pass
-
-
-
-
-
-
-
 
 
 import time
 start_time = time.time()
 
-#graph_details, graph = create_graph('g1.txt') 
+#vertices, edges, graph, vertices_list  = create_graph('g1.txt') 
+#Graph contains negative weight cycle
+#None
+#--- 17.121081829071045 seconds ---
 
-#graph_details, graph = create_graph('g2.txt') 
+#vertices, edges, graph, vertices_list  = create_graph('g2.txt') 
+#Graph contains negative weight cycle
+#None
+#--- 16.92175006866455 seconds ---
 
-#graph_details, graph = create_graph('g3.txt') 
+vertices, edges, graph, vertices_list  = create_graph('g3.txt') 
+#904
+#--- 15.45386815071106 seconds ---
 
-#graph_details, graph = create_graph('large.txt') 
+#vertices, edges, graph, vertices_list  = create_graph('large.txt') 
 
-
-print('end', bellman_ford())
-
-
+print(bellman_ford())
 print("--- %s seconds ---" % (time.time() - start_time))
