@@ -93,9 +93,9 @@ start_time = time.time()
 #print(floyd_warshall('test_cases/test1.txt'))
 #-41
 
-#print(floyd_warshall('test_cases/test2.txt'))
+print(floyd_warshall('test_cases/test2.txt'))
 #-3127
-#-3107.0
+#TODO returning -3107.0
 #--- 8165.598217010498 seconds ---
 
 #print(floyd_warshall('test_cases/test3.txt'))
@@ -121,7 +121,7 @@ start_time = time.time()
 #TODO returning -16
 
 
-print(floyd_warshall('large.txt'))
+#print(floyd_warshall('large.txt'))
 #-6
 
 print("--- %s seconds ---" % (time.time() - start_time))
