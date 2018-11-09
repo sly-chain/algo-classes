@@ -22,31 +22,46 @@ Your task is to run Prim's minimum spanning tree algorithm on this graph. You sh
 
 IMPLEMENTATION NOTES: This graph is small enough that the straightforward O(mn) time implementation of Prim's algorithm should work fine. OPTIONAL: For those of you seeking an additional challenge, try implementing a heap-based version. The simpler approach, which should already give you a healthy speed-up, is to maintain relevant edges in a heap (with keys = edge costs). The superior approach stores the unprocessed vertices in the heap, as described in lecture. Note this requires a heap that supports deletions, and you'll probably need to maintain some kind of mapping between vertices and their positions in the heap.
 """
+# =============================================================================
+# def create_graph(file):
+#     graph = {}
+#     
+#     with open(file) as adjacency_list:
+#         first_line = adjacency_list.readline()
+#         graph_details = [int(s) for s in first_line.split()]
+# 
+#         for line in adjacency_list:
+#             single_line = [int(s) for s in line.split()]
+#             vertex = single_line[0]
+#             node = single_line[1]
+#             cost = single_line[2]
+#             
+#             if vertex in graph:
+#                 graph[vertex].update({node: cost})
+#             else:
+#                 graph[vertex] = {node: cost}
+#                 
+#             
+#         graph_details = [int(s) for s in first_line.split()]
+#     
+#     return graph_details, graph
+# =============================================================================
 
+from collections import defaultdict
 
 def create_graph(file):
-    graph = {}
+    tree = lambda: defaultdict(tree)
+    graph = tree()
     
     with open(file) as adjacency_list:
         first_line = adjacency_list.readline()
         graph_details = [int(s) for s in first_line.split()]
 
         for line in adjacency_list:
-            single_line = [int(s) for s in line.split()]
-            vertex = single_line[0]
-            node = single_line[1]
-            cost = single_line[2]
-            
-            if vertex in graph:
-                graph[vertex].update({node: cost})
-            else:
-                graph[vertex] = {node: cost}
-                
-            
-        graph_details = [int(s) for s in first_line.split()]
-    
-    return graph_details, graph
+            vertex, node, cost = [int(s) for s in line.split()]
+            graph[vertex][node] = cost
 
+    return graph_details, graph
 
 
 def prim(graph_details, graph):
