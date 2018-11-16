@@ -31,28 +31,79 @@ def create_list(file):
     return total, vertices, dist_matrix
 
 
-#from itertools import permutations
 
-def get_min_cost(current_vertex, current_set):
-    start = 0
-    total_set = vertices[1:]
-    
-    if current_set == []:
-        min_cost = dist_matrix[current_vertex][start] 
-        return min_cost
-    
-    for current_vertex in vertices[:1]:
-        del current_set[current_vertex]
-        min_cost = dist_matrix[current_vertex][start] + get_min_cost(current_vertex, current_set)
-    
-    return min_cost 
+from itertools import combinations, chain
 
-def tsp(file): 
-    solution = get_min_cost(A, current_vertex, k, n)
-    return solution
-    
-n, vertices, dist_matrix = create_list(file)
 
+def create_powerset():
+    s = range(1,n)
+#    return list( map(list, chain.from_iterable((combinations(s, r) for r in range(len(s)+1))) ))
+    return list(chain.from_iterable((combinations(s, r) for r in range(len(s)+1))))
+
+
+def get_min_cost(subset, s, min_cost_dict):
+    subset_copy = list(subset)
+    subset_copy.remove(s)
+    subset_copy = tuple(subset_copy)
+    cost = min_cost_dict[s][subset_copy]
+    return cost
+
+
+def tsp(): 
+    powerset = create_powerset()
+    min_cost_dict = {k: {} for k in range(1, n)}
+
+    for subset in powerset:
+        for current in range(1, n):
+            if current in subset:
+                continue
+            
+            min_cost = float('Inf')
+            for s in subset:
+                cost = dist_matrix[s][current] + get_min_cost(subset, s, min_cost_dict)
+                if cost < min_cost:
+                    min_cost = cost
+    
+            if len(subset) == 0:
+                min_cost = dist_matrix[0][current]
+            
+            min_cost_dict[current][subset] = min_cost
+    
+    return min_cost_dict[0][range(1, n)] 
+
+#print(tsp('tsp.txt'))
+n, vertices, dist_matrix = create_list('test_cases/test1.txt')
+print(tsp())
+# 12.36
+
+#print(tsp('test_cases/test2.txt'))
+
+
+
+# =============================================================================
+# def generate_combinations(set_len):
+#     combos = list(map(list, combinations(range(1, n), set_len)))
+#     return combos 
+# 
+# def get_min_cost(current_set_len, A_prev):
+#     A = numpy.array()
+#     min_cost = float('Inf')
+#     
+#     combos = generate_combinations(current_set_len)
+#     print(combos)
+#     for c in combos:
+#         vertex = c[0]
+#         remaining_set = c[1:]
+#         
+#         for r in remaining_set:
+#             cost = dist_matrix[vertex][r] + A_prev[r][remaining_set.remove(r)]
+#             if cost < min_cost:
+#                 min_cost = cost
+#         
+#         A[vertex][remaining_set] = min_cost
+#     
+#     return A
+# =============================================================================
 
 
 # =============================================================================
@@ -107,11 +158,5 @@ n, vertices, dist_matrix = create_list(file)
 # =============================================================================
 
 
-#print(tsp('tsp.txt'))
 
-print(tsp('test_cases/test1.txt'))
-# TODO returning 10.81
-# 12.36
-
-#print(tsp('test_cases/test2.txt'))
 
