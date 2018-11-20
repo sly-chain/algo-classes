@@ -12,8 +12,12 @@ OPTIONAL: If you want bigger data sets to play with, check out the TSP instances
 
 Hint: You might experiment with ways to reduce the data set size. For example, trying plotting the points. Can you infer any structure of the optimal solution? Can you use that structure to speed up your algorithm?
 """
+
+
 import numpy
 from scipy.spatial.distance import pdist, squareform
+from itertools import combinations, chain
+
 
 def create_list(file):
     vertices = []
@@ -29,10 +33,6 @@ def create_list(file):
     dist_matrix = squareform(dist_array)
     
     return total, vertices, dist_matrix
-
-
-
-from itertools import combinations, chain
 
 
 def create_powerset():
@@ -69,16 +69,29 @@ def tsp():
             
             min_cost_dict[current][subset] = min_cost
     
-    return min_cost_dict[0][range(1, n)] 
+    return min_cost
 
-#print(tsp('tsp.txt'))
-n, vertices, dist_matrix = create_list('test_cases/test1.txt')
-print(tsp())
+
+import time
+start_time = time.time()
+
+n, vertices, dist_matrix = create_list('tsp.txt')
+    
+
+#n, vertices, dist_matrix = create_list('test_cases/test1.txt')
 # 12.36
 
-#print(tsp('test_cases/test2.txt'))
+#n, vertices, dist_matrix = create_list('test_cases/test2.txt')
+# 73
 
+#n, vertices, dist_matrix = create_list('test_cases/test3.txt')
+# 10.24
 
+print(tsp())
+print("--- %s seconds ---" % (time.time() - start_time))
+#
+#26368.1946948
+#--- 5649.925425052643 seconds ---
 
 # =============================================================================
 # def generate_combinations(set_len):
