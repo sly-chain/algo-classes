@@ -85,6 +85,7 @@ def dijkstra(graph, weighted_graph, dist, vertices, source):
     
     while heap_que:
         current = heapq.heappop(heap_que)[1]
+        print(current)
         if current in weighted_graph:
             for v, d in weighted_graph[current]:
                 if v not in dist_map:
@@ -113,6 +114,7 @@ def johnson(file):
     #return shortest shortest path
     
     vertices, edges, graph = create_graph(file)
+    print(graph)
     update_graph = add_vertex(vertices, graph)
     weighted_graph, dist = bellman_ford(vertices+1, update_graph)
     results = []
@@ -128,7 +130,7 @@ def johnson(file):
 import time
 start_time = time.time()
 
-#print(johnson('test_cases/test1.txt'))
+print(johnson('test_cases/test1.txt'))
 #-41
 
 #print(johnson('test_cases/test2.txt'))
@@ -151,7 +153,7 @@ start_time = time.time()
 #returning negative weight cycle
 
 
-print(johnson('g3.txt'))
+#print(johnson('g3.txt'))
 # returning -5
 
 
