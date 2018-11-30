@@ -1,22 +1,25 @@
 import copy
 
 class Node:
-    def __init__(self, head, tail, weight):
-        self.head = head
-        self.tail = tail
+    def __init__(self, vertex, weight):
+        self.vertex = vertex
         self.weight = weight
         self.parent = None
+
+    def __lt__(self, other):
+        return self.weight < other.weight
 
 
 class Graph:
     def __init__(self, file):
         self.file = file
-        self.v_total, self.e_total, self.graph, self.v_dict, self.v_list = self.create_graph()
+        self.v_total, self.e_total, self.v_dict, self.v_list, self.n_list = self.create_graph()
         self.updated_graph = self.add_vertex()
         self.weighted_graph, self.weights = self.bellman_ford()
 
     def create_graph(self):
-        graph = {}
+#        graph = {}
+        n_list = []
         v_set = set()
         v_dict = {}
         
@@ -31,8 +34,9 @@ class Graph:
                 
                 v_set.add(l[0])
                 v_set.add(l[1])
-                graph[(l[1], l[0])] = l[2]
-                n = Node(l[1], l[0], l[2])
+#                graph[(l[1], l[0])] = l[2]
+                n = Node(l[0], l[2])
+                n_list.append(n)
                 
                 if l[1] not in v_dict.keys():
                     v_dict[l[1]] = [n]
@@ -40,86 +44,79 @@ class Graph:
                     v_dict[l[1]].append(n)
             
             v_list = list(v_set)
-        print('g', graph)
-        return v_total, e_total, graph, v_dict, v_list
+#        print('g', graph)
+#        print('d', v_dict)
+        return v_total, e_total, v_dict, v_list, n_list
 
 
     def add_vertex(self):
-        updated_graph = copy.deepcopy(self.graph)
+        updated_graph = copy.deepcopy(self.v_dict)
+        updated_graph[0] = []
 
-        for v in self.v_list:
-            updated_graph[(0, v)] = 0
-        
+        for v in self.n_list:
+            n = Node(0, 0)
+            updated_graph[0].append(n)
         return updated_graph
 
 
     def bellman_ford(self):
+        weighted_graph = copy.deepcopy(self.updated_graph)
         weights = {i: float('Inf') for i in self.v_list}
-        # needs to be a list of all the vertices 
-        weights[self.v_total+1] = 0
-        weighted_graph = {}
+        weights[0] = 0
         
-        for i in self.v_total:
-            for edge, distance in self.updated_graph.items():
-                new_weight = weights[node.head] + node.weight
-                if weights[node.tail] > new_weight:
-                    weights[node.tail] = new_weight
+        for v in weighted_graph.keys():
+            for node in weighted_graph[v]:
+                new_weight = weights[v] + node.weight
+                if weights[node.vertex] > new_weight:
+                    weights[node.vertex] = new_weight
+                    node.parent = v
                     
         #negative cycle check
-        for node in self.updated_graph:
-            if weights[node.head] + node.weight < weights[node.tail]:
-                raise Exception('Graph contains negative weight cycle')
-                return
+        for v in weighted_graph.keys():
+            for node in weighted_graph[v]:
+                if weights[v] + node.weight < weights[node.vertex]:
+                    raise Exception('Graph contains negative weight cycle')
+                    return
         
-        for u, v in self.updated_graph:
-            if u != self.v_total:
-                weighted_graph[(u, v)] = self.updated_graph[(u,v)] + weights[u] - weights[v]
-        
+        for n in weighted_graph.keys():
+            for node in weighted_graph[n]:
+                if n != 0:
+                    node.weight = node.weight + weights[n] - weights[node.vertex]
+        print('w', weighted_graph)
         return weighted_graph, weights
 
 
 
 import heapq
-def dijkstra(weighted_graph, dist, v_list, v_dict, source):
-    heap_map = {i: float('Inf') for i in v_list}
-    parent = {i: None for i in v_list}
+def dijkstra(weighted_graph, weights, n_list, v_dict, source):
+    heap_map = copy.deepcopy(weighted_graph)
     heap_map[source] = 0
-    heap_que = [(source, 0)]
     dist_map = {}
     
-    while heap_que:
-        current = heapq.heappop(heap_que)[0]
-        dist_map[current] = heap_map[current]
+    while heap_map:
+        current = heapq.heappop(heap_map)
+        dist_map[current.vertex] = heap_map[current.vertex]
         
-        for node in v_dict[current]:
-            if node.tail not in dist_map:
-                continue
-            
-            new_weight = heap_map[current] + node.weight
+        for node in weighted_graph[current]:
+            new_weight = heap_map[current.head] + node.weight
                 
-            if heap_map[node.tail] > new_weight:
-                heapq.heappush(heap_que, (node.tail, new_weight))
+            if heap_map[node.vertex] > new_weight:
+                node.weight = new_weight
                 node.parent = current
             
-                    
     if dist_map:
         u = min(dist_map)
-        v = parent[u]
-        min_dist = dist_map[u]
-        return min_dist - dist[u] + dist[v]
+        return u.weight - weights[u.vertex] + weights[u.parent]
     
-    print(min_dist)
+#    print(min_dist)
     return
 
 
 def johnson(g):
-#    v_total, edges, graph, v_list = create_graph(file)
-#    update_graph = add_vertex(v_total, graph)
-#    weighted_graph, dist = bellman_ford(v_total+1, v_list, update_graph)
     results = []
     
-    for source in g.v_list:
-        solution = (dijkstra(g.weighted_graph, g.weights, g.v_list, g.v_dict, source))
+    for source in g.v_dict.keys():
+        solution = (dijkstra(g.weighted_graph, g.weights, g.n_list, g.v_dict, source))
         if solution:
             results.append(solution)
     
