@@ -9,34 +9,53 @@ class Node:
     def __lt__(self, other):
         return self.weight < other.weight
 
+class Edge:
+    def __init__(self, head, tail, weight):
+        self.head = head
+        self.tail = tail
+        self.weight = weight
 
 class Graph:
     def __init__(self, file):
         self.file = file
-        self.v_total, self.e_total, self.v_dict, self.v_list, self.n_list = self.create_graph()
+        self.v_dict, self.v_list, self.n_list = self.create_graph()
         self.updated_graph = self.add_vertex()
         self.weighted_graph, self.weights = self.bellman_ford()
 
     def create_graph(self):
-#        graph = {}
-        n_list = []
+        """
+        returns:
+            # total number of vertices
+            # total number of edges
+            # dictionary of vertices with their tails and weights
+            # list of all vertices by id
+            # list of all edges
+            # list of all nodes
+        """
+        
+        e_list = []
+#        n_list = []
         v_set = set()
         v_dict = {}
         
         with open(self.file) as adjacency_list:
-            first_line = adjacency_list.readline()
-            graph_details = [int(s) for s in first_line.split()]
-            v_total = graph_details[0]
-            e_total = graph_details[1]
+#            first_line = adjacency_list.readline()
+            adjacency_list.readline()
+#            graph_details = [int(s) for s in first_line.split()]
+#            v_num = graph_details[0]
+#            edge_num = graph_details[1]
             
             for line in adjacency_list:
                 l = [int(s) for s in line.split()]
                 
                 v_set.add(l[0])
                 v_set.add(l[1])
-#                graph[(l[1], l[0])] = l[2]
+
+                e = Edge(l[1], l[0], l[2])
+                e_list.append(e)
+                
                 n = Node(l[0], l[2])
-                n_list.append(n)
+#                n_list.append(n)
                 
                 if l[1] not in v_dict.keys():
                     v_dict[l[1]] = [n]
@@ -46,7 +65,8 @@ class Graph:
             v_list = list(v_set)
 #        print('g', graph)
 #        print('d', v_dict)
-        return v_total, e_total, v_dict, v_list, n_list
+#        return v_num, edge_num, v_dict, v_list, e_list, n_list
+        return v_dict, v_list, e_list
 
 
     def add_vertex(self):
