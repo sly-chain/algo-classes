@@ -30,114 +30,168 @@ class Graph:
         
         with open(self.file) as adjacency_list:
             first_line = adjacency_list.readline()
-            graph_details = int(first_line)
+            total_coords = int(first_line)
     
             for line in adjacency_list:
                 single_line = [float(s) for s in line.split()]
-                coord1 = single_line[0]
-                coord2 = single_line[1]
+                coord1 = single_line[1]
+                coord2 = single_line[2]
                 coords_list.append((coord1, coord2))
         
-        return graph_details, coords_list
+        return 50, coords_list
 
     
     def calc_distance(self, x, y):
         dist = [(a - b)**2 for a, b in zip(x, y)]
-        dist = sqrt(sum(dist))
-        return dist
+#        return sum(dist)
+        return sqrt(sum(dist))
     
     
     def distance_matrix(self):
+        '''
+        create matrix 
+        returning coordinates (by indexes) and corresponding length
+        sort matrix by length
+        '''
         from collections import OrderedDict
-        dist_matrix = {}
+        matrix = {}
 
         for i in range(self.total_coords-1):
             for j in range(i+1,self.total_coords):
                 x = self.coords_list[i]
                 y = self.coords_list[j]
-                dist_matrix[i,j] = self.calc_distance(x, y)
-                dist_matrix[j,i] = dist_matrix[i,j]
-
-        return OrderedDict(sorted(dist_matrix.items(), key=lambda x: x[1]))
+                matrix[i,j] = self.calc_distance(x, y)
+                matrix[j,i] = matrix[i,j]
+        
+#        print(OrderedDict(sorted(matrix.items(), key=lambda x: x[1])))
+        return OrderedDict(sorted(matrix.items(), key=lambda x: x[1]))
 
 # =============================================================================
 #         import numpy as np
 #         import itertools
 #         
-#         matrix = np.array(list(itertools.permutations(range(self.total_coords), 2)))
+#         combos = np.array(list(itertools.permutations(range(self.total_coords), 2)))
 #         
-#         for i, j in matrix:
+#         for i, j in combos:
 #             x = self.coords_list[i]
 #             y = self.coords_list[j]
-#             distance = self.calc_distance(x, y)
-#             dist_matrix[i, j] = distance
-#             dist_matrix[y, x] = dist_matrix[x, y]
+#             matrix[i,j] = self.calc_distance(x, y)
+#             
+#         return OrderedDict(sorted(matrix.items(), key=lambda x: x[1]))
 # =============================================================================
         
 
 
-def nearest(last, unvisited, dist_matrix):
-    near = unvisited[0]
-    min_dist = dist_matrix[last, near]
+def nearest(current, unvisited, dist_matrix):
+    '''
+    find nearest neighbor to the current coordinate 
+    '''
+    neighbor = unvisited[0]
+    min_dist = dist_matrix[current, neighbor]
     
     for i in unvisited[1:]:
-        if dist_matrix[last,i] < min_dist:
-            near = i
-            min_dist = dist_matrix[last, near]
-    return near, min_dist
-    
+        if dist_matrix[current, i] < min_dist:
+            neighbor = i
+            min_dist = dist_matrix[current, neighbor]
+            
+    return neighbor, min_dist
+
 
 def tsp_nn(g, source):
+    '''
+    returns total length of path
+    path as a roundtrip, returning to the source
+    '''
+    path = [source]
+    current = source
+    total = 0
     unvisited = list(range(g.total_coords))
     unvisited.remove(source)
-    last = source
-    total = g.dist_matrix[0][1] + g.dist_matrix[-1]
     
     while unvisited != []:
-        near, min_dist = nearest(last, unvisited, g.dist_matrix)
+        neighbor, min_dist = nearest(current, unvisited, g.dist_matrix)
         total += min_dist
-        unvisited.remove(near)
-        last = near
-        
-    return total    
+        path.append(neighbor)
+        unvisited.remove(neighbor)
+        current = neighbor
+    
+    total += g.dist_matrix[path[-1], path[0]]
+    return total, path
 
 
 def main(g):
+    '''
+    iterate through all coordinates and return minimum length path
+    '''
     solutions = []
+    
     for c in range(g.total_coords):
-        min_solution = float('Inf')
-        current = tsp_nn(g, c)
-        if current < min_solution:
-            min_solution = current
-        solutions.append(min_solution)
-
-    return int(min(solutions))
+        result, path = tsp_nn(g, c)
+        solutions.append(result)
+        
+    print(solutions.index(min(solutions)))
+    return round(min(solutions))
     
     
 import time
 start_time = time.time()
 
-#g = Graph('nn.txt')
+g = Graph('nn.txt')
+# =============================================================================
+# #50 == 2470
+# # version 1
+# #    TODO returning 2142
+#--- 0.2840240001678467 seconds ---
+# # version 2
+# #    TODO returning 2142
+#--- 0.12255191802978516 seconds ---
+# 
+# #1000 == 48581
+# # version 1
+# #    TODO returning 9811
+# #--- 367.4778528213501 seconds ---
+# # version 2
+# #    TODO returning 9811
+# #--- 381.2253911495209 seconds ---
+# 
+# #my last city is 18811
+# =============================================================================
 
 
 #g = Graph('test_cases/test1.txt')
-#23
-#returning 16
-#--- 0.000614166259765625 seconds ---
+# =============================================================================
+# #23
+# # version 1
+# #   23
+# #--- 0.0008928775787353516 seconds ---
+# # version 2
+# #   23
+# #--- 0.0033478736877441406 seconds ---
+# =============================================================================
 
 
 #g = Graph('test_cases/test2.txt')
-#83
-#returning 67
-#--- 0.002496004104614258 seconds ---
+# =============================================================================
+# #83
+# # version 1
+# #    83
+# #--- 0.002550840377807617 seconds ---
+# # version 2
+# #    TODO returning 81
+# #--- 0.0059719085693359375 seconds ---
+# =============================================================================
 
 
-g = Graph('test_cases/test3.txt')
-#20638
-#returning 20103
-#--- 133.34567999839783 seconds ---
-
-
+#g = Graph('test_cases/test3.txt')
+# =============================================================================
+# #20638
+# # version 1
+# #    TODO returning 19690
+# #--- 129.84756708145142 seconds ---
+# # version 2
+# #    TODO returning 19690
+# #--- 150.77037692070007 seconds ---
+# =============================================================================
 
 print(main(g))    
 print("--- %s seconds ---" % (time.time() - start_time))    
