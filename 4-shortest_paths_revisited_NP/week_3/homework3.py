@@ -38,12 +38,11 @@ class Graph:
                 coord2 = single_line[2]
                 coords_list.append((coord1, coord2))
         
-        return 50, coords_list
+        return total_coords, coords_list
 
     
     def calc_distance(self, x, y):
         dist = [(a - b)**2 for a, b in zip(x, y)]
-#        return sum(dist)
         return sqrt(sum(dist))
     
     
@@ -91,13 +90,13 @@ def nearest(current, unvisited, dist_matrix):
     
     for i in unvisited[1:]:
         if dist_matrix[current, i] < min_dist:
+            min_dist = dist_matrix[current, i]
             neighbor = i
-            min_dist = dist_matrix[current, neighbor]
             
     return neighbor, min_dist
 
 
-def tsp_nn(g, source):
+def tsp_nn(source):
     '''
     returns total length of path
     path as a roundtrip, returning to the source
@@ -111,26 +110,29 @@ def tsp_nn(g, source):
     while unvisited != []:
         neighbor, min_dist = nearest(current, unvisited, g.dist_matrix)
         total += min_dist
+        current = neighbor
         path.append(neighbor)
         unvisited.remove(neighbor)
-        current = neighbor
     
     total += g.dist_matrix[path[-1], path[0]]
-    return total, path
+#    print(path, total)
+    return round(total), path
 
 
-def main(g):
-    '''
-    iterate through all coordinates and return minimum length path
-    '''
-    solutions = []
-    
-    for c in range(g.total_coords):
-        result, path = tsp_nn(g, c)
-        solutions.append(result)
-        
-    print(solutions.index(min(solutions)))
-    return round(min(solutions))
+# =============================================================================
+# def main():
+#     '''
+#     iterate through all coordinates and return minimum length path
+#     '''
+#     solutions = []
+#     
+#     for c in range(g.total_coords):
+#         result, path = tsp_nn(c)
+#         solutions.append(result)
+#         
+# #    print(solutions.index(min(solutions)))
+#     return round(min(solutions))
+# =============================================================================
     
     
 import time
@@ -139,61 +141,29 @@ start_time = time.time()
 g = Graph('nn.txt')
 # =============================================================================
 # #50 == 2470
-# # version 1
-# #    TODO returning 2142
-#--- 0.2840240001678467 seconds ---
-# # version 2
-# #    TODO returning 2142
-#--- 0.12255191802978516 seconds ---
 # 
 # #1000 == 48581
-# # version 1
-# #    TODO returning 9811
-# #--- 367.4778528213501 seconds ---
-# # version 2
-# #    TODO returning 9811
-# #--- 381.2253911495209 seconds ---
 # 
 # #my last city is 18811
 # =============================================================================
 
 
 #g = Graph('test_cases/test1.txt')
-# =============================================================================
 # #23
-# # version 1
-# #   23
-# #--- 0.0008928775787353516 seconds ---
-# # version 2
-# #   23
-# #--- 0.0033478736877441406 seconds ---
 # =============================================================================
 
 
 #g = Graph('test_cases/test2.txt')
-# =============================================================================
 # #83
-# # version 1
-# #    83
-# #--- 0.002550840377807617 seconds ---
-# # version 2
-# #    TODO returning 81
-# #--- 0.0059719085693359375 seconds ---
 # =============================================================================
 
 
 #g = Graph('test_cases/test3.txt')
-# =============================================================================
 # #20638
-# # version 1
-# #    TODO returning 19690
-# #--- 129.84756708145142 seconds ---
-# # version 2
-# #    TODO returning 19690
-# #--- 150.77037692070007 seconds ---
 # =============================================================================
 
-print(main(g))    
+print(tsp_nn(0))
+#print(main())    
 print("--- %s seconds ---" % (time.time() - start_time))    
     
     
