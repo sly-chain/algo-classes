@@ -16,7 +16,7 @@ class Graph:
     
             for line in adjacency_list:
                 single_line = [float(s) for s in line.split()]
-                coords_list.append([single_line[1], single_line[2]])
+                coords_list.append((single_line[0], (single_line[1], single_line[2])))
         
 #        print(total_coords)
         print("create graph--- %s seconds ---" % (time.time() - start_time))
@@ -39,8 +39,8 @@ class Graph:
         for i in range(self.total_coords-1):
 #            print('\n', 'i', i)
             for j in range(i+1,self.total_coords):
-                x = self.coords_list[i]
-                y = self.coords_list[j]
+                x = self.coords_list[i][1]
+                y = self.coords_list[j][1]
                 
                 length = self.calc_distance(x, y)
                 matrix.append(((i, j), length))
@@ -60,9 +60,9 @@ def nearest(curr, unvisited, dist_matrix):
     find nearest neighbor to the current coordinate 
     '''
 #    print(unvisited)
-    c = g.coords_list[curr]
+    c = g.coords_list[curr][1]
     neighbor = unvisited[0]
-    n = g.coords_list[unvisited[0]]
+    n = g.coords_list[unvisited[0]][1]
     min_dist = g.calc_distance(c, n)
     
     for i in unvisited[1:]:
@@ -115,11 +115,13 @@ start_time = time.time()
 
 #g = Graph('test_cases/test1.txt')
 # #23
+#--- 0.0013799667358398438 seconds ---
 # =============================================================================
 
 
 #g = Graph('test_cases/test2.txt')
 # #83
+#--- 0.009680986404418945 seconds ---
 # =============================================================================
 
 
