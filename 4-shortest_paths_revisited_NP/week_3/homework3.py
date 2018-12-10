@@ -37,9 +37,10 @@ class Graph:
                 coord1 = single_line[1]
                 coord2 = single_line[2]
                 coords_list.append((coord1, coord2))
+                
+        print("create graph--- %s seconds ---" % (time.time() - start_time))
+        return 10000, coords_list
         
-        return total_coords, coords_list
-
     
     def calc_distance(self, x, y):
         dist = [(a - b)**2 for a, b in zip(x, y)]
@@ -55,29 +56,31 @@ class Graph:
         from collections import OrderedDict
         matrix = {}
 
-        for i in range(self.total_coords-1):
-            for j in range(i+1,self.total_coords):
-                x = self.coords_list[i]
-                y = self.coords_list[j]
-                matrix[i,j] = self.calc_distance(x, y)
-                matrix[j,i] = matrix[i,j]
-        
-#        print(OrderedDict(sorted(matrix.items(), key=lambda x: x[1])))
-        return OrderedDict(sorted(matrix.items(), key=lambda x: x[1]))
-
 # =============================================================================
-#         import numpy as np
-#         import itertools
+#         for i in range(self.total_coords-1):
+#             for j in range(i+1,self.total_coords):
+#                 x = self.coords_list[i]
+#                 y = self.coords_list[j]
+#                 matrix[i,j] = self.calc_distance(x, y)
+#                 matrix[j,i] = matrix[i,j]
 #         
-#         combos = np.array(list(itertools.permutations(range(self.total_coords), 2)))
-#         
-#         for i, j in combos:
-#             x = self.coords_list[i]
-#             y = self.coords_list[j]
-#             matrix[i,j] = self.calc_distance(x, y)
-#             
+#         print("dist matrix--- %s seconds ---" % (time.time() - start_time))
+# #        print(OrderedDict(sorted(matrix.items(), key=lambda x: x[1])))
 #         return OrderedDict(sorted(matrix.items(), key=lambda x: x[1]))
 # =============================================================================
+
+        import numpy as np
+        import itertools
+         
+        combos = np.array(list(itertools.permutations(range(self.total_coords), 2)))
+         
+        for i, j in combos:
+            x = self.coords_list[i]
+            y = self.coords_list[j]
+            matrix[i,j] = self.calc_distance(x, y)
+        
+        print("dist matrix--- %s seconds ---" % (time.time() - start_time))
+        return OrderedDict(sorted(matrix.items(), key=lambda x: x[1]))
         
 
 
@@ -116,7 +119,7 @@ def tsp_nn(source):
     
     total += g.dist_matrix[path[-1], path[0]]
 #    print(path, total)
-    return round(total), path
+    return round(total)
 
 
 # =============================================================================
@@ -144,7 +147,7 @@ g = Graph('nn.txt')
 # 
 # #1000 == 48581
 # 
-# #my last city is 18811
+# #last city is 18811
 # =============================================================================
 
 
