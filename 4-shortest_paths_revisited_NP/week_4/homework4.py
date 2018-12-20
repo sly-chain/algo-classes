@@ -13,41 +13,48 @@ class Graph():
     
     def __init__(self, file):
         self.file = file
-        self.graph, self.reverse_graph = self.create_graph()
-        self.total_count = 0
-        
-    def add_clause(self, x, y, total_count, graph):
-        if x < 0:
-            x += total_count 
-        if y < 0:
-            y += total_count
-        graph[x].append(y)
-        
-    def add_inverse(self, x, y, total_count, reverse_graph):
-        if x < 0:
-            x += total_count 
-        if y < 0:
-            y += total_count
-        reverse_graph[y].append(x)
+        self.total_count, self.graph = self.create_graph()
+        self.reverse_graph = self.transpose_graph()
 
     def create_graph(self):
         graph = defaultdict(list)
-        reverse_graph = defaultdict(list)
-        
         with open(self.file) as adjacency_list:
             first_line = adjacency_list.readline()
-            self.total_count = int(first_line)
+            n = int(first_line)
             
             for line in adjacency_list:
                 single_line = [int(s) for s in line.split()]
                 x = single_line[0]
                 y = single_line[1]
                 
-                self.add_clause(x, y, self.total_count, graph)
-                self.add_inverse(x, y, self.total_count, reverse_graph)
+                if (x>0 and y>0):
+                    graph[x+n].append(y)
+                    graph[y+n].append(x) 
+          
+                elif (x>0 and y<0): 
+                    graph[x+n].append(n-y)
+                    graph[-y].append(x)
+          
+                elif (x<0 and y>0):
+                    graph[-x].append(y)
+                    graph[y+n].append(n-x)
+          
+                else:
+                    graph[-x].append(n-y)
+                    graph[-y].append(n-x)
                 
-        return graph, reverse_graph
-            
+#        print(graph)
+        return n, graph
+    
+    def transpose_graph(self):
+        reverse_graph = defaultdict(list)
+        
+        for k, v in self.graph.items():
+            for i in v:
+                reverse_graph[i].append(k)
+#        print(reverse_graph)
+        return reverse_graph
+        
     
 def dfs():
     visited = []
@@ -64,7 +71,6 @@ def dfs_helper(node, visited, stack):
     visited.append(node)
     
     if node in g.graph:
-    
         for v in g.graph[node]:
             if v in visited:
                 continue
@@ -77,11 +83,11 @@ def reverse_dfs(stack):
     visited = []
     scc = {}
     counter = 0
-    
     while stack:
         node = stack.pop(0)
-        reverse_dfs_helper(node, visited, scc, counter)
-        counter += 1
+        if node not in visited:
+            reverse_dfs_helper(node, visited, scc, counter)
+            counter += 1
     
 #    print(scc)
     return scc
@@ -102,8 +108,8 @@ def sat():
     stack = dfs()
     scc = reverse_dfs(stack)
     
-    for i in range(g.total_count):
-        if scc[i] == scc[i + g.total_count]:
+    for i in range(1, g.total_count):
+        if scc[i] == scc[i+g.total_count]:
             return 0
     return 1
 
@@ -130,7 +136,7 @@ start_time = time.time()
 #g = Graph('2sat6.txt')
 
 
-#g = Graph('test_cases/test1.txt')
+g = Graph('test_cases/test1.txt')
 # =============================================================================
 #0
 
@@ -138,7 +144,7 @@ start_time = time.time()
 # =============================================================================
 #1
 
-g = Graph('test_cases/test3.txt')
+#g = Graph('test_cases/test3.txt')
 # =============================================================================
 #0
 
