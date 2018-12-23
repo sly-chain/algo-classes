@@ -54,6 +54,8 @@ def karatsuba(x,y):
 #print(karatsuba(x,y))
         
 print(karatsuba(1234, 5678))
-
+#6454652
 print(karatsuba(3, 11))
+#33
 print(karatsuba(12, 56))
+#672

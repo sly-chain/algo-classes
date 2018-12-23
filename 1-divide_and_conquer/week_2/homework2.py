@@ -113,7 +113,8 @@ integer_array = create_integer_array('IntegerArray.txt')
 #integer_array = [8, 12, 3, 10, 15, 18]
 sorted_list, inv, inv_list, sorted_a, sorted_b = counting_inversions(integer_array)
 print('result', inv)
-    
+#1176350207
+
 # =============================================================================
 # file = open('results.txt', 'w')
 # file.write(str(inv_list))
